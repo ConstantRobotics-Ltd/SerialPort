@@ -34,11 +34,11 @@ void SerialPort::close()
 {
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
-	if (initFlag) {
+    if (m_initFlag) {
         ::close(Cport);
 		flock(Cport, LOCK_UN);
 	}//if...
-	initFlag = false;
+    m_initFlag = false;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     if (m_initFlag) CloseHandle(Cport);
     m_initFlag = false;
@@ -208,7 +208,7 @@ bool SerialPort::open(
 		return false;
 	}
 
-	initFlag = true;
+    m_initFlag = true;
 
 	return true;
 
