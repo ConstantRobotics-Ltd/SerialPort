@@ -82,19 +82,19 @@ namespace clib
         int sendData(uint8_t *buf, uint32_t size);
 
 		/**
-		 * \brief Method to close serial port.
+         * @brief Method to close serial port.
 		 */
         void close();
 		/**
-		 * \brief Method to check if serial port open.
+         * @brief Method to check if serial port open.
 		 */
 		bool isOpen();
 
 	private:
 		
-		///< Port initialization flag.
-		bool initFlag;
-		///< Port handle.
+        /// Port initialization flag.
+        bool m_initFlag;
+        /// Port handle.
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
 		int Cport;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)

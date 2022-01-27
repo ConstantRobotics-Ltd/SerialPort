@@ -15,7 +15,7 @@ project(SerialPort LANGUAGES CXX)
 ## basic 3rd-party settings before use
 ###############################################################################
 # To inherit the top-level architecture when the project is used as a submodule.
-SET(PARENT ${PARENT}_COMMUNICATION_LIB_)
+SET(PARENT ${PARENT}_COMMUNICATION_)
 # Disable self-overwriting of parameters inside included subdirectories.
 SET(${PARENT}_SUBMODULE_CACHE_OVERWRITE OFF CACHE BOOL "" FORCE)
 
@@ -26,6 +26,7 @@ SET(${PARENT}_SUBMODULE_CACHE_OVERWRITE OFF CACHE BOOL "" FORCE)
 ## 3rd-party submodules configuration
 ###############################################################################
 SET(${PARENT}_SERIAL_PORT                               ON CACHE BOOL "" FORCE)
+SET(${PARENT}_SERIAL_PORT_TESTS                         ON CACHE BOOL "" FORCE)
 
 
 
@@ -36,5 +37,9 @@ SET(${PARENT}_SERIAL_PORT                               ON CACHE BOOL "" FORCE)
 ###############################################################################
 if (${PARENT}_SERIAL_PORT)
     add_subdirectory(SerialPort)
+endif()
+
+if (${PARENT}_SERIAL_PORT_TESTS)
+    add_subdirectory(Tests)
 endif()
 

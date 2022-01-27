@@ -18,7 +18,7 @@ std::string SerialPort::getVersion()
 SerialPort::SerialPort()
 {
 	// Init variabes by default values.
-	initFlag = false;
+    m_initFlag = false;
 	Cport = 0;
 }
 
@@ -40,8 +40,8 @@ void SerialPort::close()
 	}//if...
 	initFlag = false;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-	if (initFlag) CloseHandle(Cport);
-	initFlag = false;
+    if (m_initFlag) CloseHandle(Cport);
+    m_initFlag = false;
 #endif
 
 }
@@ -49,7 +49,7 @@ void SerialPort::close()
 
 int SerialPort::readData(uint8_t *buf, uint32_t size)
 {
-	if (!initFlag) 
+    if (!m_initFlag)
 		return -1;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
@@ -66,7 +66,7 @@ int SerialPort::readData(uint8_t *buf, uint32_t size)
 
 int SerialPort::sendData(uint8_t *buf, uint32_t size)
 {
-	if (!initFlag)
+    if (!m_initFlag)
 		return -1;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
@@ -87,7 +87,7 @@ bool SerialPort::open(
 	unsigned int timeout,
 	const char *mode) {
 
-	if (initFlag)
+    if (m_initFlag)
         close();
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
@@ -313,7 +313,7 @@ bool SerialPort::open(
 		return false;
 	}
 
-	initFlag = true;
+    m_initFlag = true;
 
 	return true;
 
@@ -324,5 +324,5 @@ bool SerialPort::open(
 
 bool SerialPort::isOpen()
 {
-	return initFlag;
+    return m_initFlag;
 }
