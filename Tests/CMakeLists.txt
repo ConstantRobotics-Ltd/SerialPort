@@ -14,10 +14,8 @@ project(Tests LANGUAGES CXX)
 ## CONFIGURATION
 ## project configuration
 ###############################################################################
-if (${PARENT}_SERIAL_PORT_TESTS)
-    SET(${PARENT}_SERIAL_PORT_TESTS_DATA_RECEIVER       ON CACHE BOOL "" FORCE)
-    SET(${PARENT}_SERIAL_PORT_TESTS_DATA_SENDER         ON CACHE BOOL "" FORCE)
-endif()
+SET(${PARENT}_SERIAL_PORT_TESTS_DATA_RECEIVER       ON CACHE BOOL "" FORCE)
+SET(${PARENT}_SERIAL_PORT_TESTS_DATA_SENDER         ON CACHE BOOL "" FORCE)
 
 
 
