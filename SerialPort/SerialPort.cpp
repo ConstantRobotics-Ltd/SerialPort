@@ -1,6 +1,9 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "SerialPort.h"
 #include <cstring>
+#include <chrono>
+#include <ctime>
+#include <thread>
 
 #include "SerialPortVersion.h"
 
@@ -15,11 +18,12 @@ std::string SerialPort::getVersion()
 }
 
 
-SerialPort::SerialPort()
+SerialPort::SerialPort() :
+    m_initFlag(false),
+    m_timeoutMs(0),
+    Cport(0)
 {
-	// Init variabes by default values.
-    m_initFlag = false;
-	Cport = 0;
+
 }
 
 
@@ -34,13 +38,15 @@ void SerialPort::close()
 {
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
-    if (m_initFlag) {
+    if (m_initFlag)
+    {
         ::close(Cport);
 		flock(Cport, LOCK_UN);
-	}//if...
+    }
     m_initFlag = false;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    if (m_initFlag) CloseHandle(Cport);
+    if (m_initFlag)
+        CloseHandle(Cport);
     m_initFlag = false;
 #endif
 
@@ -53,6 +59,8 @@ int SerialPort::readData(uint8_t *buf, uint32_t size)
 		return -1;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
+    if (m_timeoutMs > 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(m_timeoutMs));
 	return read(Cport, buf, size);
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 	int n;
@@ -89,6 +97,9 @@ bool SerialPort::open(
 
     if (m_initFlag)
         close();
+
+    // Copy timeout.
+    m_timeoutMs = timeout;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
 

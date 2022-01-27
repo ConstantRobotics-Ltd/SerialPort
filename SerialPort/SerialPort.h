@@ -94,6 +94,8 @@ namespace clib
 		
         /// Port initialization flag.
         bool m_initFlag;
+        /// Read data timeout.
+        int m_timeoutMs;
         /// Port handle.
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
 		int Cport;
