@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.5)
 ## PROJECT
 ## name and version
 ##
-project(SerialPortDataSender LANGUAGES CXX)
+project(SerialPortTestDataReceiver LANGUAGES CXX)
 
 
 ##
@@ -34,13 +34,8 @@ set  (SOURCES ${CPP_FILES} ${H_FILES})
 ## create target and add include path
 ##
 if (NOT TARGET ${PROJECT_NAME})
-
     add_executable(${PROJECT_NAME} ${SOURCES})
 endif()
-
-if (NOT WIN32)
-    target_link_libraries(${PROJECT_NAME} pthread)
-endif(NOT WIN32)
 
 
 target_link_libraries(${PROJECT_NAME} SerialPort)
