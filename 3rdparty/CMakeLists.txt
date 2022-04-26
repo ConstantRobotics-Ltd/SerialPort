@@ -3,25 +3,21 @@ cmake_minimum_required(VERSION 3.13)
 
 
 ################################################################################
-## PROJECT
-## name and version
+## 3RD-PARTY
+## dependencies for the project
 ################################################################################
-project(SerialPort LANGUAGES CXX)
+project(3rdparty LANGUAGES CXX)
 
 
 
 ################################################################################
 ## SETTINGS
-## basic project settings before use
+## basic 3rd-party settings before use
 ################################################################################
-# If this project is used as a submodule, the variable should be overridden
-# to "OFF" in the top-level application (to disable forced cache rewriting)
-option(${PARENT}_SUBMODULE_CACHE_OVERWRITE "Enable forced cache rewriting" ON)
-if (${PARENT}_SUBMODULE_CACHE_OVERWRITE)
-    SET(REWRITE_FORCE "FORCE")
-else()
-    SET(REWRITE_FORCE "")
-endif()
+# To inherit the top-level architecture when the project is used as a submodule.
+SET(PARENT ${PARENT}_3RDPARTY_)
+# Disable self-overwriting of parameters inside included subdirectories.
+SET(${PARENT}_SUBMODULE_CACHE_OVERWRITE OFF CACHE BOOL "" FORCE)
 
 
 
@@ -29,8 +25,11 @@ endif()
 ## CONFIGURATION
 ## 3rd-party submodules configuration
 ################################################################################
-SET(${PARENT}_SERIAL_PORT                               ON  CACHE BOOL "" FORCE)
-SET(${PARENT}_SERIAL_PORT_EXAMPLES                      ON  CACHE BOOL "" FORCE)
+SET(${PARENT}_SUBMODULE_TRACER ON CACHE BOOL "" FORCE)
+if (${PARENT}_SUBMODULE_TRACER)
+    SET(${PARENT}_TRACER                                 ON CACHE BOOL "" FORCE)
+    SET(${PARENT}_TRACER_EXAMPLES                       OFF CACHE BOOL "" FORCE)
+endif()
 
 
 
@@ -38,10 +37,7 @@ SET(${PARENT}_SERIAL_PORT_EXAMPLES                      ON  CACHE BOOL "" FORCE)
 ## INCLUDING SUBDIRECTORIES
 ## Adding subdirectories according to the 3rd-party configuration
 ################################################################################
-if (${PARENT}_SERIAL_PORT)
-    add_subdirectory(3rdparty)
-    add_subdirectory(src)
+if (${PARENT}_SUBMODULE_TRACER)
+    add_subdirectory(Tracer)
 endif()
-if (${PARENT}_SERIAL_PORT_EXAMPLES)
-    add_subdirectory(examples)
-endif()
+

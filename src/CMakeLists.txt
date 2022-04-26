@@ -43,3 +43,11 @@ if (NOT TARGET ${PROJECT_NAME})
     add_library(${PROJECT_NAME} STATIC ${SOURCES})
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)
+
+
+
+###############################################################################
+## LINK LIBRARIES
+## linking all dependencies
+###############################################################################
+target_link_libraries(${PROJECT_NAME} Tracer)

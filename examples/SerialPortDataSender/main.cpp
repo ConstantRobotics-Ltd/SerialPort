@@ -2,22 +2,34 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+
+#include "Tracer.h"
 #include "SerialPort.h"
+
+using namespace cr::clib;
+using namespace cr::utils;
 
 // Entry point.
 int main(void)
 {
-    std::cout << "###  Serial port data sender  ###" << std::endl << std::endl;
+    std::cout<< "=================================================" << std::endl;
+    std::cout<< "SerialPortDataSender " << SerialPort::getVersion() << std::endl;
+    std::cout<< "=================================================" << std::endl;
+    std::cout<< "Library versions: "                                << std::endl;
+    std::cout<< "Tracer:............"<< Tracer::getVersion()        << std::endl;
+    std::cout<< "SerialPort:........."<< SerialPort::getVersion()   << std::endl;
+    std::cout<< "-------------------------------------------------" << std::endl;
+    std::cout<< std::endl;
 
     // Enter serial port num.
-    int serialPortNum = 0;
+    int portNum = 0;
     std::cout << "Enter serial port num: ";
-    std::cin >> serialPortNum;
+    std::cin >> portNum;
 
     // Enter serial port baudrate.
-    int serialPortBaudrate = 0;
+    int portBaudrate = 0;
     std::cout << "Enter serial port baudrate: ";
-    std::cin >> serialPortBaudrate;
+    std::cin >> portBaudrate;
 
     // Enter numer of bytes.
     int numBytesToSend = 0;
@@ -31,12 +43,14 @@ int main(void)
 
     // Open serial port.
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
-    std::string serialPortName = "/dev/ttyS" + std::to_string(serialPortNum);
+    std::string portName = "/dev/ttyS" + std::to_string(portNum);
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    std::string serialPortName = "\\\\.\\COM" + std::to_string(serialPortNum);
+    std::string portName = "\\\\.\\COM" + std::to_string(portNum);
 #endif
+
+    // Init serial port.
     cr::clib::SerialPort serialPort;
-    if (!serialPort.open(serialPortName.c_str(), serialPortBaudrate))
+    if (!serialPort.open(portName.c_str(), portBaudrate))
     {
         std::cout << "ERROR: Serial port not open. Exit" << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -55,7 +69,7 @@ int main(void)
             outputData[i] = (uint8_t)(rand() % 255);
 
         // Send data.
-        std::cout << serialPort.sendData(outputData, numBytesToSend) << "bytes sent" << std::endl;
+        std::cout << serialPort.sendData(outputData, numBytesToSend) << " bytes sent" << std::endl;
 
         // Wait according to parameters.
         int waitTime = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime).count();
@@ -65,5 +79,5 @@ int main(void)
         startTime = std::chrono::system_clock::now();
     }
 
-	return 1;
+    return 1;
 }

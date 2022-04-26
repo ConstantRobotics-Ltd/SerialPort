@@ -12,9 +12,7 @@ using namespace cr::clib;
 
 std::string SerialPort::getVersion()
 {
-    return std::to_string(SERIAL_PORT_MAJOR_VERSION) + "." +
-           std::to_string(SERIAL_PORT_MINOR_VERSION) + "." +
-           std::to_string(SERIAL_PORT_PATCH_VERSION);
+    return SERIAL_PORT_VERSION;
 }
 
 
@@ -36,16 +34,14 @@ SerialPort::~SerialPort()
 
 void SerialPort::close()
 {
-
-#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
     if (m_initFlag)
+#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
     {
         ::close(Cport);
 		flock(Cport, LOCK_UN);
     }
     m_initFlag = false;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    if (m_initFlag)
         CloseHandle(Cport);
     m_initFlag = false;
 #endif
@@ -243,6 +239,7 @@ bool SerialPort::open(
 	case 256000: strcpy(mode_str, "baud=256000"); break;
     case 460800: strcpy(mode_str, "baud=460800"); break;
 	case 500000: strcpy(mode_str, "baud=500000"); break;
+    case 921600: strcpy(mode_str, "baud=921600"); break;
 	case 1000000: strcpy(mode_str, "baud=1000000"); break;
 	default:
 		return false;
@@ -336,4 +333,45 @@ bool SerialPort::open(
 bool SerialPort::isOpen()
 {
     return m_initFlag;
+}
+
+bool SerialPort::setFlowControl(bool enable)
+{
+
+    if (!m_initFlag)
+        return false;
+
+#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
+    struct termios tty;
+
+    // Read in existing settings, and handle any error
+    // NOTE: This is important! POSIX states that the struct passed to tcsetattr()
+    // must have been initialized with a call to tcgetattr() overwise behaviour
+    // is undefined
+    if(tcgetattr(Cport, &tty) != 0) {
+        std::cout << "Error "<< errno << " from tcgetattr: "
+                  << strerror(errno) << std::endl;
+        return false;
+    }
+
+    if (enable)
+        tty.c_cflag |= CRTSCTS;  // Enable RTS/CTS hardware flow control
+    else
+        tty.c_cflag &= ~CRTSCTS; // Disable RTS/CTS hardware flow control (most common)
+
+
+    if (tcsetattr(Cport, TCSANOW, &tty) == -1) {
+        return false;
+    }
+
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    if (enable)
+    {
+        return EscapeCommFunction(Cport, SETRTS);
+    }
+    else
+    {
+        return EscapeCommFunction(Cport, CLRRTS);
+    }
+#endif
 }
