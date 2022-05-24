@@ -1,7 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.1.0] - 2022-05-26
+## [2.1.1] - 20-May-2022
+
+### Fixed
+
+- Linux support (added `#include <iostream>` in `SerialPort.cpp` file)
+
+## [2.1.0] - 20-May-2022
 
 ### Added
 
@@ -13,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - method isOpen(..); // Method to check if Serial Port open.
 - method close(..); // Method to close Serial Port.
 
-## [0.0.1] - 2022-05-17
+## [0.0.1] - 17-May-2022
 
 ### Added
 

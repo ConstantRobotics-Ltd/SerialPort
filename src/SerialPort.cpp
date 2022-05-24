@@ -4,6 +4,7 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <iostream>
 
 #include "SerialPortVersion.h"
 

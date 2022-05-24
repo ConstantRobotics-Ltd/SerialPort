@@ -27,7 +27,7 @@ endif()
 
 ################################################################################
 ## CONFIGURATION
-## 3rd-party submodules configuration
+## project configuration
 ################################################################################
 SET(${PARENT}_SERIAL_PORT                     ON CACHE BOOL "" ${REWRITE_FORCE})
 SET(${PARENT}_SERIAL_PORT_EXAMPLES            ON CACHE BOOL "" ${REWRITE_FORCE})
@@ -36,7 +36,7 @@ SET(${PARENT}_SERIAL_PORT_EXAMPLES            ON CACHE BOOL "" ${REWRITE_FORCE})
 
 ################################################################################
 ## INCLUDING SUBDIRECTORIES
-## Adding subdirectories according to the 3rd-party configuration
+## Adding subdirectories according to the project configuration
 ################################################################################
 if (${PARENT}_SERIAL_PORT)
     add_subdirectory(3rdparty)
