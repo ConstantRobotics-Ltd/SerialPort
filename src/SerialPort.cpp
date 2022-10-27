@@ -375,4 +375,5 @@ bool SerialPort::setFlowControl(bool enable)
         return EscapeCommFunction(Cport, CLRRTS);
     }
 #endif
+	return true;
 }
