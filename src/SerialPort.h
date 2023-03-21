@@ -20,13 +20,16 @@
 #endif
 
 
-namespace cr {
-namespace clib {
+namespace cr
+{
+namespace clib
+{
 
 /**
  * @brief Serial port class.
  */
-class SerialPort {
+class SerialPort
+{
 public:
 
     /**

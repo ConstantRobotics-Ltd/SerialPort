@@ -39,7 +39,6 @@ SET(${PARENT}_SERIAL_PORT_EXAMPLES            ON CACHE BOOL "" ${REWRITE_FORCE})
 ## Adding subdirectories according to the project configuration
 ################################################################################
 if (${PARENT}_SERIAL_PORT)
-    add_subdirectory(3rdparty)
     add_subdirectory(src)
 endif()
 if (${PARENT}_SERIAL_PORT_EXAMPLES)

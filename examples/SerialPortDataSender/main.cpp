@@ -2,58 +2,54 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
-
-#include "Tracer.h"
 #include "SerialPort.h"
 
+/// Link namespaces.
+using namespace std;
 using namespace cr::clib;
-using namespace cr::utils;
+using namespace std::chrono;
 
 // Entry point.
 int main(void)
 {
-    std::cout<< "=================================================" << std::endl;
-    std::cout<< "SerialPortDataSender " << SerialPort::getVersion() << std::endl;
-    std::cout<< "=================================================" << std::endl;
-    std::cout<< "Library versions: "                                << std::endl;
-    std::cout<< "Tracer:............"<< Tracer::getVersion()        << std::endl;
-    std::cout<< "SerialPort:........."<< SerialPort::getVersion()   << std::endl;
-    std::cout<< "-------------------------------------------------" << std::endl;
-    std::cout<< std::endl;
+    cout<< "=================================================" << endl;
+    cout<< "SerialPortDataSender " << SerialPort::getVersion() << endl;
+    cout<< "=================================================" << endl;
+    cout<< endl;
 
     // Enter serial port num.
     int portNum = 0;
-    std::cout << "Enter serial port num: ";
-    std::cin >> portNum;
+    cout << "Enter serial port num: ";
+    cin >> portNum;
 
     // Enter serial port baudrate.
     int portBaudrate = 0;
-    std::cout << "Enter serial port baudrate: ";
-    std::cin >> portBaudrate;
+    cout << "Enter serial port baudrate: ";
+    cin >> portBaudrate;
 
     // Enter numer of bytes.
     int numBytesToSend = 0;
-    std::cout << "Enter num bytes to send: ";
-    std::cin >> numBytesToSend;
+    cout << "Enter num bytes to send: ";
+    cin >> numBytesToSend;
 
     // Enter sending data period ms.
     int cyclePeriodMs = 0;
-    std::cout << "Enter sending data period ms: ";
-    std::cin >> cyclePeriodMs;
+    cout << "Enter sending data period ms: ";
+    cin >> cyclePeriodMs;
 
     // Open serial port.
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
     std::string portName = "/dev/ttyS" + std::to_string(portNum);
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    std::string portName = "\\\\.\\COM" + std::to_string(portNum);
+    string portName = "\\\\.\\COM" + to_string(portNum);
 #endif
 
     // Init serial port.
-    cr::clib::SerialPort serialPort;
+    SerialPort serialPort;
     if (!serialPort.open(portName.c_str(), portBaudrate))
     {
-        std::cout << "ERROR: Serial port not open. Exit" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        cout << "ERROR: Serial port not open. Exit." << endl;
+        this_thread::sleep_for(seconds(1));
         return -1;
     }
 
@@ -61,7 +57,7 @@ int main(void)
     uint8_t* outputData = new uint8_t[numBytesToSend];
 
     // Main loop.
-    std::chrono::time_point<std::chrono::system_clock> startTime = std::chrono::system_clock::now();
+    chrono::time_point<system_clock> startTime = system_clock::now();
     while (true)
     {
         // Prepare random data.
@@ -69,14 +65,16 @@ int main(void)
             outputData[i] = (uint8_t)(rand() % 255);
 
         // Send data.
-        std::cout << serialPort.sendData(outputData, numBytesToSend) << " bytes sent" << std::endl;
+        std::cout << serialPort.sendData(outputData, numBytesToSend) <<
+                     " bytes sent" << std::endl;
 
         // Wait according to parameters.
-        int waitTime = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime).count();
+        int waitTime = (int)duration_cast<std::chrono::milliseconds>(
+                    system_clock::now() - startTime).count();
         waitTime = cyclePeriodMs - waitTime;
         if (waitTime > 0)
-            std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
-        startTime = std::chrono::system_clock::now();
+            this_thread::sleep_for(milliseconds(waitTime));
+        startTime = system_clock::now();
     }
 
     return 1;
