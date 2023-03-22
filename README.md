@@ -17,7 +17,7 @@
 - [SerialPort class description](#SerialPort-class-description)
   - [Class declaration](#Class-declaration)
   - [getVersion method](#getVersion-method)
-  - [open method](#open method)
+  - [open method](#open-method)
   - [readData method](#readData-method)
   - [sendData method](#sendData-method)
   - [isOpen method](#isOpen-method)
