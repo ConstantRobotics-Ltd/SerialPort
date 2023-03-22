@@ -25,7 +25,7 @@
   - [setFlowControl method](#setFlowControl-method)
 - [Examples](#Examples)
   - [Data sender example](#Data-sender-example)
-  - [Data receiver example](#Data receiver example)
+  - [Data receiver example](#Data-receiver-example)
 
 # Overview
 
