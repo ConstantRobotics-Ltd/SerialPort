@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.13)
 ## PROJECT
 ## name and version
 ################################################################################
-project(SerialPort LANGUAGES CXX)
+project(Tracer LANGUAGES CXX)
 
 
 
@@ -29,18 +29,17 @@ endif()
 ## CONFIGURATION
 ## project configuration
 ################################################################################
-SET(${PARENT}_SERIAL_PORT                     ON CACHE BOOL "" ${REWRITE_FORCE})
-SET(${PARENT}_SERIAL_PORT_EXAMPLES            ON CACHE BOOL "" ${REWRITE_FORCE})
+SET(${PARENT}_TRACER                          ON CACHE BOOL "" ${REWRITE_FORCE})
+SET(${PARENT}_TRACER_EXAMPLES                 ON CACHE BOOL "" ${REWRITE_FORCE})
 
 
-
-################################################################################
+###############################################################################
 ## INCLUDING SUBDIRECTORIES
-## Adding subdirectories according to the project configuration
-################################################################################
-if (${PARENT}_SERIAL_PORT)
+## Adding subdirectories according to the configuration
+###############################################################################
+if (${PARENT}_TRACER)
     add_subdirectory(src)
 endif()
-if (${PARENT}_SERIAL_PORT_EXAMPLES)
-    add_subdirectory(examples)
+if (${PARENT}_TRACER_EXAMPLES)
+    add_subdirectory(example)
 endif()
