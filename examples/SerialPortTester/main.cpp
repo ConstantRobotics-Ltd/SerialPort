@@ -32,7 +32,7 @@ int main(void)
     SerialPort serialPort;
     if (!serialPort.open(serialPortName.c_str(), baudrate, 1000))
     {
-        cout << "ERROR: Serial port not open. Exit." << endl;
+        cout << "ERROR: Serial port not open. Exit" << endl;
         this_thread::sleep_for(seconds(1));
         return -1;
     }
@@ -67,7 +67,7 @@ int main(void)
         // Show output data.
         cout << "[TX]: ";
         for (int i = 0; i < bytes; ++i)
-            cout << hex << buffer[i] << " ";
+            cout << hex << (int)buffer[i] << " ";
         cout << dec << endl;
 
         // Send data.
@@ -88,7 +88,7 @@ int main(void)
         // Show input data.
         cout << "[RX]: ";
         for (int i = 0; i < bytes; ++i)
-            cout << hex << buffer[i] << " ";
+            cout << hex << (int)buffer[i] << " ";
         cout << dec << endl;
     }
 
