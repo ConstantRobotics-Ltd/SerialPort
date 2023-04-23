@@ -16,3 +16,4 @@ project(Examples LANGUAGES CXX)
 ###############################################################################
 add_subdirectory(SerialPortDataReceiver)
 add_subdirectory(SerialPortDataSender)
+add_subdirectory(SerialPortTester)

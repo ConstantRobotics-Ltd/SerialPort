@@ -6,7 +6,7 @@
 
 # **SerialPort C++ library**
 
-**v2.2.0**
+**v2.3.0**
 
 ------
 
@@ -41,6 +41,7 @@
 | 2.0.0   | 20.05.2022   | - Interface changed.<br />- Added method to RTS/CTS hardware flow control. |
 | 2.1.0   | 10.07.2022   | - Code optimized.                                            |
 | 2.2.0   | 22.03.2023   | - Code optimized.<br />- Documentation updated.              |
+| 2.3.0   | 24.04.2023   | - Added new test application.                                |
 
 # SerialPort class description
 

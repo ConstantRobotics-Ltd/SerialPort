@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.13)
 ## LIBRARY-PROJECT
 ## name and version
 ###############################################################################
-project(SerialPort VERSION 2.2.0 LANGUAGES CXX)
+project(SerialPort VERSION 2.3.0 LANGUAGES CXX)
 
 
 
