@@ -30,7 +30,7 @@ int main(void)
 
     // Open serial port.
     SerialPort serialPort;
-    if (!serialPort.open(serialPortName.c_str(), baudrate, 1000))
+    if (!serialPort.open(serialPortName.c_str(), baudrate, 0))
     {
         cout << "ERROR: Serial port not open. Exit" << endl;
         this_thread::sleep_for(seconds(1));
@@ -76,6 +76,9 @@ int main(void)
             cout << "ERROR: Can't send data" << endl;
             continue;
         }
+
+        // Wait.
+        this_thread::sleep_for(seconds(2));
 
         // Wait data from serial port. Wait 1 sec.
         bytes = serialPort.readData(buffer, bufferSize);
