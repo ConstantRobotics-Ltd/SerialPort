@@ -6,7 +6,7 @@
 
 # **SerialPort C++ library**
 
-**v2.3.0**
+**v2.4.0**
 
 ------
 
@@ -42,6 +42,7 @@
 | 2.1.0   | 10.07.2022   | - Code optimized.                                            |
 | 2.2.0   | 22.03.2023   | - Code optimized.<br />- Documentation updated.              |
 | 2.3.0   | 24.04.2023   | - Added new test application.                                |
+| 2.4.0   | 19.06.2023   | - Added new test application (SerialPortStringTester).       |
 
 # SerialPort class description
 
