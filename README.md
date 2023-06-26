@@ -6,7 +6,7 @@
 
 # **SerialPort C++ library**
 
-**v2.4.0**
+**v2.5.0**
 
 ------
 
@@ -26,10 +26,11 @@
 - [Examples](#Examples)
   - [Data sender example](#Data-sender-example)
   - [Data receiver example](#Data-receiver-example)
+- [SerialPortTested application](#SerialPortTested-application)
 
 # Overview
 
-**SerialPort** C++ library provides simple interface to work with serial port. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has only to functions: open, send data and read data from serial port.
+**SerialPort** C++ library provides simple interface to work with serial port. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, send data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency.
 
 # Versions
 
@@ -43,6 +44,7 @@
 | 2.2.0   | 22.03.2023   | - Code optimized.<br />- Documentation updated.              |
 | 2.3.0   | 24.04.2023   | - Added new test application.                                |
 | 2.4.0   | 19.06.2023   | - Added new test application (SerialPortStringTester).       |
+| 2.5.0   | 26.06.2023   | - Updated test applications (SerialPortStringTester and SerialPortTester combined into one application). |
 
 # SerialPort class description
 
@@ -384,9 +386,9 @@ int main(void)
 }
 ```
 
+# SerialPortTested application
 
-
-
+**SerialPortTester** is application designed to test communication with any equipment via serial port. The app allows the user to send any data (manual input) to the serial port and check the response from the equipment. The app allows data entry in both HEX and string format (for ASCII protocols). The application supports Windows and Linux OS.
 
 
 
