@@ -27,7 +27,7 @@
   - [Data sender example](#Data-sender-example)
   - [Data receiver example](#Data-receiver-example)
 - [Build and connect to your project](#Build-and-connect-to-your-project)
-- [SerialPortTested application](#SerialPortTested-application)
+- [SerialPortTester application](#SerialPortTester-application)
 
 # Overview
 
@@ -468,7 +468,7 @@ if (${PARENT}_SUBMODULE_SERIAL_PORT)
 endif()
 ```
 
-File **3rdparty/CMakeLists.txt** adds folder **Frame** to your project and excludes test application (Frame class tests) from compiling. Your repository new structure will be:
+File **3rdparty/CMakeLists.txt** adds folder **SerialPort** to your project and excludes examples (SerialPort examples) from compiling. Your repository new structure will be:
 
 ```bash
 CMakeLists.txt
@@ -478,7 +478,7 @@ src
     yourLib.cpp
 3rdparty
     CMakeLists.txt
-    Frame
+    SerialPort
 ```
 
 Next you need include folder 3rdparty in main **CMakeLists.txt** file of your repository. Add string at the end of your main **CMakeLists.txt**:
@@ -487,7 +487,7 @@ Next you need include folder 3rdparty in main **CMakeLists.txt** file of your re
 add_subdirectory(3rdparty)
 ```
 
-Next you have to include Frame library in your **src/CMakeLists.txt** file:
+Next you have to include SerialPort library in your **src/CMakeLists.txt** file:
 
 ```cmake
 target_link_libraries(${PROJECT_NAME} SerialPort)
@@ -561,10 +561,44 @@ Serial port tester v2.5.0
 
 Set serial port name: /dev/ttyUSB0
 Set baudrate: 115200
-Chose mode (1 - string, 0 - HEX): 1
+Chose mode (1 - string, 0 - HEX): 0
 ```
 
+After you will be able to enter message to send. In HEX mode you have to print string in HEX format and push push "Enter" on keyboard. The application will send your message to serial port and will wait 2 sec. After 2 sec the application will check and will show response or will show **"ERROR: No response from serial port"** message:
 
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
 
+Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0 
+Set baudrate: 115200
+Chose mode (1 - string, 0 - HEX): 0
+Enter HEX string (e.g. AAF00A): AA040170001FEBAA
+[TX]: aa 4 1 70 0 1f eb aa 
+[RX]: 55 17 70 33 46 54 49 49 36 34 30 30 30 31 30 30 30 30 30 58 45 50 4e 0 91 eb aa 
+Enter HEX string (e.g. AAF00A): AA0401710020EBAA
+[TX]: aa 4 1 71 0 20 eb aa 
+[RX]: 55 17 71 33 42 31 31 36 30 31 34 31 0 0 0 0 0 0 0 0 0 0 0 0 b0 eb aa 
+Enter HEX string (e.g. AAF00A): 
+```
 
+In string mode the application in additional to input HEX data will show string of response.
 
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
+Set baudrate: 115200
+Chose mode (1 - string, 0 - HEX): 1
+Enter string: TestMessage
+[TX]: 54 65 73 74 4d 65 73 73 61 67 65 d a 
+ERROR: No response from serial port
+Enter string: ZR
+[TX]: 5a 52 d a
+[RX]: 5a 52 3d 31 d a  :  ZR=1
+```
+
+In string mode the application adds symbols **'\r'** and **'\n'** at the end of a string automatically.
