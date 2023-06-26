@@ -26,6 +26,7 @@
 - [Examples](#Examples)
   - [Data sender example](#Data-sender-example)
   - [Data receiver example](#Data-receiver-example)
+- [Build and connect to your project](#Build-and-connect-to-your-project)
 - [SerialPortTested application](#SerialPortTested-application)
 
 # Overview
@@ -386,11 +387,182 @@ int main(void)
 }
 ```
 
-# SerialPortTested application
+# Build and connect to your project
 
-**SerialPortTester** is application designed to test communication with any equipment via serial port. The app allows the user to send any data (manual input) to the serial port and check the response from the equipment. The app allows data entry in both HEX and string format (for ASCII protocols). The application supports Windows and Linux OS.
+Typical commands to build **SerialPort** library (on Linux OS):
 
+```bash
+git clone https://github.com/ConstantRobotics-Ltd/SerialPort.git
+cd SerialPort
+mkdir build
+cd build
+cmake ..
+make
+```
 
+If you want connect **SerialPort** library to your CMake project as source code you can make follow. For example, if your repository has structure:
+
+```bash
+CMakeLists.txt
+src
+    CMakeList.txt
+    yourLib.h
+    yourLib.cpp
+```
+
+You can add repository **SerialPort** as submodule by command:
+
+```bash
+cd <your respository folder>
+git submodule add https://github.com/ConstantRobotics-Ltd/SerialPort.git 3rdparty/SerialPort
+```
+
+In you repository folder will be created folder **3rdparty/SerialPort** which contains files of **SerialPort** repository. New structure of your repository:
+
+```bash
+CMakeLists.txt
+src
+    CMakeList.txt
+    yourLib.h
+    yourLib.cpp
+3rdparty
+    SerialPort
+```
+
+Create CMakeLists.txt file in **3rdparty** folder. CMakeLists.txt should contain:
+
+```cmake
+cmake_minimum_required(VERSION 3.13)
+
+################################################################################
+## 3RD-PARTY
+## dependencies for the project
+################################################################################
+project(3rdparty LANGUAGES CXX)
+
+################################################################################
+## SETTINGS
+## basic 3rd-party settings before use
+################################################################################
+# To inherit the top-level architecture when the project is used as a submodule.
+SET(PARENT ${PARENT}_YOUR_PROJECT_3RDPARTY)
+# Disable self-overwriting of parameters inside included subdirectories.
+SET(${PARENT}_SUBMODULE_CACHE_OVERWRITE OFF CACHE BOOL "" FORCE)
+
+################################################################################
+## CONFIGURATION
+## 3rd-party submodules configuration
+################################################################################
+SET(${PARENT}_SUBMODULE_SERIAL_PORT                     ON  CACHE BOOL "" FORCE)
+if (${PARENT}_SUBMODULE_SERIAL_PORT)
+    SET(${PARENT}_SERIAL_PORT                           ON  CACHE BOOL "" FORCE)
+    SET(${PARENT}_SERIAL_PORT_EXAMPLES                  OFF CACHE BOOL "" FORCE)
+endif()
+
+################################################################################
+## INCLUDING SUBDIRECTORIES
+## Adding subdirectories according to the 3rd-party configuration
+################################################################################
+if (${PARENT}_SUBMODULE_SERIAL_PORT)
+    add_subdirectory(SerialPort)
+endif()
+```
+
+File **3rdparty/CMakeLists.txt** adds folder **Frame** to your project and excludes test application (Frame class tests) from compiling. Your repository new structure will be:
+
+```bash
+CMakeLists.txt
+src
+    CMakeList.txt
+    yourLib.h
+    yourLib.cpp
+3rdparty
+    CMakeLists.txt
+    Frame
+```
+
+Next you need include folder 3rdparty in main **CMakeLists.txt** file of your repository. Add string at the end of your main **CMakeLists.txt**:
+
+```cmake
+add_subdirectory(3rdparty)
+```
+
+Next you have to include Frame library in your **src/CMakeLists.txt** file:
+
+```cmake
+target_link_libraries(${PROJECT_NAME} SerialPort)
+```
+
+Done!
+
+# SerialPortTester application
+
+**SerialPortTester** is application designed to test communication with any equipment via serial port. The app allows the user to send any data (manual input) to the serial port and check the response from the equipment. The app allows data entry in both HEX and string format (for ASCII protocols). The application supports Windows and Linux OS. How to use:
+
+Copy executable file SerialPortTester and make it executable:
+
+```bash
+sudo chmod +x SerialPortTester
+```
+
+Run application from sudo (the application doesn't have params):
+
+```bash
+sudo ./SerialPortTester
+```
+
+You will see dialog to enter serial port name. On **Windows OS** you should set COM port num (the application will make serial port name according to Windows format **"\\\\\\\\.\\\\COM" + to_string(portNum)"**):
+
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set COM port num (1,2,3,...): 2
+```
+
+On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (for USB to serial adapters), **/dev/ttyS0,1(N)** (for build in serial ports), **/dev/serial/by-id/(port name)** (for USB to serial adapters) and push "Enter" on keyboard:
+
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set serial port name: /dev/ttyUSB0
+```
+
+After you have to set baudrate:
+
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set serial port name: /dev/ttyUSB0
+```
+
+After you have to set baudrate and push "Enter" on keyboard:
+
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set serial port name: /dev/ttyUSB0
+Set baudrate: 115200
+```
+
+After you have to set chose mode: string mode (you will be able print text for ASCII protocols) or HEX mode (you will be able to print HEX values):
+
+```bash
+================================================
+Serial port tester v2.5.0
+================================================
+
+Set serial port name: /dev/ttyUSB0
+Set baudrate: 115200
+Chose mode (1 - string, 0 - HEX): 1
+```
 
 
 

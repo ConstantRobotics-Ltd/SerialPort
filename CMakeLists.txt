@@ -29,8 +29,8 @@ endif()
 ## CONFIGURATION
 ## project configuration
 ################################################################################
-SET(${PARENT}_SERIAL_PORT                     ON CACHE BOOL "" ${REWRITE_FORCE})
-SET(${PARENT}_SERIAL_PORT_EXAMPLES            ON CACHE BOOL "" ${REWRITE_FORCE})
+SET(${PARENT}_SERIAL_PORT                    ON  CACHE BOOL "" ${REWRITE_FORCE})
+SET(${PARENT}_SERIAL_PORT_EXAMPLES           ON  CACHE BOOL "" ${REWRITE_FORCE})
 
 
 
