@@ -53,7 +53,7 @@ void SerialPort::close()
 
 
 
-int SerialPort::readData(uint8_t *buf, uint32_t size)
+int SerialPort::read(uint8_t *buf, uint32_t size)
 {
     if (!m_initFlag)
         return -1;
@@ -73,7 +73,7 @@ int SerialPort::readData(uint8_t *buf, uint32_t size)
 
 
 
-int SerialPort::sendData(uint8_t *buf, uint32_t size)
+int SerialPort::write(uint8_t *buf, uint32_t size)
 {
     if (!m_initFlag)
         return -1;
@@ -92,7 +92,7 @@ int SerialPort::sendData(uint8_t *buf, uint32_t size)
 
 
 bool SerialPort::open(
-    const char *comport_file,
+    std::string comport_file,
     unsigned int baudrate,
     unsigned int timeout,
     const char *mode) {
@@ -193,7 +193,7 @@ bool SerialPort::open(
         return false;
     }
 
-    m_port = ::open(comport_file, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    m_port = ::open(comport_file.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (m_port == -1)
         return false;
 
@@ -297,7 +297,7 @@ bool SerialPort::open(
 
     strcat(mode_str, " dtr=on rts=on");
 
-    m_port = CreateFileA(comport_file, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, NULL, NULL);
+    m_port = CreateFileA(comport_file.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, NULL, NULL);
     if (m_port == INVALID_HANDLE_VALUE)
         return false;
 

@@ -58,8 +58,8 @@ int main(void)
     while (true)
     {
         // Clear input buffer.
-        while (serialPort.readData(buffer, bufferSize) > 0)
-            serialPort.readData(buffer, bufferSize);
+        while (serialPort.read(buffer, bufferSize) > 0)
+            serialPort.read(buffer, bufferSize);
 
         // Enter message.
         if (mode == 1)
@@ -101,7 +101,7 @@ int main(void)
         cout << dec << endl;
 
         // Send data.
-        if (serialPort.sendData(buffer, bytes) != bytes)
+        if (serialPort.write(buffer, bytes) != bytes)
         {
             cout << "ERROR: Can't send data" << endl;
             continue;
@@ -111,7 +111,7 @@ int main(void)
         this_thread::sleep_for(seconds(2));
 
         // Wait data from serial port. Wait 1 sec.
-        bytes = serialPort.readData(buffer, bufferSize);
+        bytes = serialPort.read(buffer, bufferSize);
         if (bytes <= 0)
         {
             cout << "ERROR: No response from serial port" << endl;

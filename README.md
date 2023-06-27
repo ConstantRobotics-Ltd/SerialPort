@@ -6,7 +6,7 @@
 
 # **SerialPort C++ library**
 
-**v2.5.0**
+**v3.0.0**
 
 ------
 
@@ -18,8 +18,8 @@
   - [Class declaration](#Class-declaration)
   - [getVersion method](#getVersion-method)
   - [open method](#open-method)
-  - [readData method](#readData-method)
-  - [sendData method](#sendData-method)
+  - [read method](#read-method)
+  - [write method](#write-method)
   - [isOpen method](#isOpen-method)
   - [close method](#close-method)
   - [setFlowControl method](#setFlowControl-method)
@@ -46,6 +46,7 @@
 | 2.3.0   | 24.04.2023   | - Added new test application.                                |
 | 2.4.0   | 19.06.2023   | - Added new test application (SerialPortStringTester).       |
 | 2.5.0   | 26.06.2023   | - Updated test applications (SerialPortStringTester and SerialPortTester combined into one application). |
+| 3.0.0   | 27.06.2023   | - Changed interface (added new methods read(...) and write(...) instead of readData(...) and sendData(...)). |
 
 # SerialPort class description
 
@@ -64,26 +65,22 @@ namespace clib
 class SerialPort
 {
 public:
-
     /**
      * @brief Method to get string of current library version.
      * @return String of current library version.
      */
     static std::string getVersion();
-
     /**
      * @brief Class constructor.
      */
     SerialPort();
-
     /**
      * @brief Class destructor.
      */
     ~SerialPort();
-
     /**
      * @brief Method to open serial port.
-     * @param comport_file Serial port name string. Format depends from OS.
+     * @param file Serial port name string. Format depends from OS.
      * @param baudrate Boudrate.
      * @param timeout Wait data timeout.
      * @param mode Mode. Always 3 simbols:
@@ -93,36 +90,31 @@ public:
      * Example: "8N1".
      * @return TRUE in case success or FALSE in case any errors.
      */
-    bool open(const char *file, unsigned int baudrate,
+    bool open(std::string file, unsigned int baudrate,
               unsigned int timeout = 100, const char *mode = "8N1");
-
     /**
      * @brief Read data from serial port.
      * @param buf pointer to data buffer to copy.
      * @param size size of data buffer.
      * @return Number of readed bytes or returns -1.
      */
-    int readData(uint8_t *buf, uint32_t size);
-
+    int read(uint8_t *buf, uint32_t size);
     /**
-     * @brief Send data to serial port.
+     * @brief Write data to serial port.
      * @param buf pointer to data to send.
      * @param size size of data to send.
      * @return Number of bytes sended or return -1 in case any errors.
      */
-    int sendData(uint8_t *buf, uint32_t size);
-
+    int write(uint8_t *buf, uint32_t size);
     /**
      * @brief Method to check if serial port open.
      * @return TRUE if port open or FALSE.
      */
     bool isOpen();
-
     /**
      * @brief Method to close serial port.
      */
     void close();
-
     /**
      * @brief Method to set RTS/CTS hardware flow control.
      * @param enable Enable RTS/CTS hardware flow control.
@@ -153,7 +145,7 @@ std::cout << "Serial port version: " << cr::clib::SerialPort::getVersion() << st
 **open(...)** method intended to open serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
 
 ```cpp
-bool open(const char *file, unsigned int baudrate, unsigned int timeout = 100, const char *mode = "8N1");
+bool open(std::string file, unsigned int baudrate, unsigned int timeout = 100, const char *mode = "8N1");
 ```
 
 | Parameter | Value                                                        |
@@ -165,12 +157,12 @@ bool open(const char *file, unsigned int baudrate, unsigned int timeout = 100, c
 
 **Returns:** TRUE if the serial port open or FALSE if not.
 
-## readData method
+## read method
 
-**readData(...)** method intended to read data from serial port. Method will wait **timeout** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
+**read(...)** method intended to read data from serial port. Method will wait **timeout** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
 
 ```cpp
-int readData(uint8_t *buf, uint32_t size);
+int read(uint8_t *buf, uint32_t size);
 ```
 
 | Parameter | Value                                                        |
@@ -180,12 +172,12 @@ int readData(uint8_t *buf, uint32_t size);
 
 **Returns:** number of received bytes **<= size** or **0** if no data in input serial port buffer or **-1** if serial port not open.
 
-## sendData method
+## write method
 
-**sendData(...)** method intended to send data to serial port. Method declaration:
+**write(...)** method intended to send data to serial port. Method declaration:
 
 ```cpp
-int sendData(uint8_t *buf, uint32_t size);
+int write(uint8_t *buf, uint32_t size);
 ```
 
 | Parameter | Value                                |
@@ -299,7 +291,7 @@ int main(void)
             outputData[i] = (uint8_t)(rand() % 255);
 
         // Send data.
-        std::cout << serialPort.sendData(outputData, numBytesToSend) <<
+        std::cout << serialPort.write(outputData, numBytesToSend) <<
                      " bytes sent" << std::endl;
 
         // Wait according to parameters.
@@ -376,7 +368,7 @@ int main(void)
     while (true)
     {
         // Read data.
-        int bytes = serialPort.readData(inputData, inputDataSize);
+        int bytes = serialPort.read(inputData, inputDataSize);
 
         // Check input data size.
         if (bytes <= 0)

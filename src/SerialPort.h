@@ -61,7 +61,7 @@ public:
      * Example: "8N1".
      * @return TRUE in case success or FALSE in case any errors.
      */
-    bool open(const char *file, unsigned int baudrate,
+    bool open(std::string file, unsigned int baudrate,
               unsigned int timeout = 100, const char *mode = "8N1");
 
     /**
@@ -70,15 +70,15 @@ public:
      * @param size size of data buffer.
      * @return Number of readed bytes or returns -1.
      */
-    int readData(uint8_t *buf, uint32_t size);
+    int read(uint8_t *buf, uint32_t size);
 
     /**
-     * @brief Send data to serial port.
+     * @brief Write data to serial port.
      * @param buf pointer to data to send.
      * @param size size of data to send.
      * @return Number of bytes sended or return -1 in case any errors.
      */
-    int sendData(uint8_t *buf, uint32_t size);
+    int write(uint8_t *buf, uint32_t size);
 
     /**
      * @brief Method to check if serial port open.

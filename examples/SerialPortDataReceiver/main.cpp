@@ -56,7 +56,7 @@ int main(void)
     while (true)
     {
         // Read data.
-        int bytes = serialPort.readData(inputData, inputDataSize);
+        int bytes = serialPort.read(inputData, inputDataSize);
 
         // Check input data size.
         if (bytes <= 0)
