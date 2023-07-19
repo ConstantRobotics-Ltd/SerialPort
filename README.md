@@ -4,11 +4,15 @@
 
 ![logo](_static/serial_port_logo.png)
 
+
+
 # **SerialPort C++ library**
 
-**v3.0.0**
+**v3.0.1**
 
 ------
+
+
 
 # Table of contents
 
@@ -29,9 +33,13 @@
 - [Build and connect to your project](#Build-and-connect-to-your-project)
 - [SerialPortTester application](#SerialPortTester-application)
 
+
+
 # Overview
 
-**SerialPort** C++ library provides simple interface to work with serial port. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, send data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency.
+**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency.
+
+
 
 # Versions
 
@@ -47,6 +55,9 @@
 | 2.4.0   | 19.06.2023   | - Added new test application (SerialPortStringTester).       |
 | 2.5.0   | 26.06.2023   | - Updated test applications (SerialPortStringTester and SerialPortTester combined into one application). |
 | 3.0.0   | 27.06.2023   | - Changed interface (added new methods read(...) and write(...) instead of readData(...) and sendData(...)). |
+| 3.0.1   | 19.07.2023   | - Fixed compiling error in methods read(...) and write(...) for Linux. |
+
+
 
 # SerialPort class description
 
@@ -126,6 +137,8 @@ public:
 }
 ```
 
+
+
 ## getVersion method
 
 **getVersion()** method return string of current version **SerialPort** class. Particular lens controller can have it's own **getVersion()** method. Method declaration:
@@ -139,6 +152,8 @@ Method can be used without **Lens** class instance:
 ```cpp
 std::cout << "Serial port version: " << cr::clib::SerialPort::getVersion() << std::endl;
 ```
+
+
 
 ## open method
 
@@ -157,6 +172,8 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeout = 100, c
 
 **Returns:** TRUE if the serial port open or FALSE if not.
 
+
+
 ## read method
 
 **read(...)** method intended to read data from serial port. Method will wait **timeout** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
@@ -171,6 +188,8 @@ int read(uint8_t *buf, uint32_t size);
 | size      | Size of buffer. Size of data which you want to read from serial port. Method will return **<= size** bytes from input serial port buffer. |
 
 **Returns:** number of received bytes **<= size** or **0** if no data in input serial port buffer or **-1** if serial port not open.
+
+
 
 ## write method
 
@@ -187,6 +206,8 @@ int write(uint8_t *buf, uint32_t size);
 
 **Returns:** number of bytes sent **<= size** or **-1** if serial port not open.
 
+
+
 ## isOpen method
 
 **isOpen()** method intended to obtain serial port connection status. Method declaration:
@@ -197,6 +218,8 @@ bool isOpen();
 
 **Returns:** TRUE is the serial port open or FALSE if not.
 
+
+
 ## close method
 
 **close()** method intended to close serial port. Method declaration:
@@ -204,6 +227,8 @@ bool isOpen();
 ```cpp
 void close();
 ```
+
+
 
 ## setFlowControl method
 
@@ -219,7 +244,11 @@ bool setFlowControl(bool enable);
 
 **Returns:** TRUE if mode was changed or FALSE.
 
+
+
 # Examples
+
+
 
 ## Data sender example
 
@@ -307,6 +336,8 @@ int main(void)
 }
 ```
 
+
+
 ## Data receiver example
 
 ```cpp
@@ -378,6 +409,8 @@ int main(void)
     }
 }
 ```
+
+
 
 # Build and connect to your project
 
@@ -487,6 +520,8 @@ target_link_libraries(${PROJECT_NAME} SerialPort)
 
 Done!
 
+
+
 # SerialPortTester application
 
 **SerialPortTester** is application designed to test communication with any equipment via serial port. The app allows the user to send any data (manual input) to the serial port and check the response from the equipment. The app allows data entry in both HEX and string format (for ASCII protocols). The application supports Windows and Linux OS. How to use:
@@ -507,7 +542,7 @@ You will see dialog to enter serial port name. On **Windows OS** you should set 
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -517,7 +552,7 @@ On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (f
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.2
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -527,7 +562,7 @@ After you have to set baudrate:
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -537,7 +572,7 @@ After you have to set baudrate and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -548,7 +583,7 @@ After you have to set chose mode: string mode (you will be able print text for A
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -560,7 +595,7 @@ After you will be able to enter message to send. In HEX mode you have to print s
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0 
@@ -579,7 +614,7 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v2.5.0
+Serial port tester v3.0.1
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
