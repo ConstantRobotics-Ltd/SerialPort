@@ -20,6 +20,7 @@
 #endif
 
 
+
 namespace cr
 {
 namespace clib
@@ -33,9 +34,8 @@ class SerialPort
 public:
 
     /**
-     * @brief Method to get string of current library version.
-     *
-     * @return String of current library version.
+     * @brief Get string of current library version.
+     * @return String of current library version "Major.Minor.Patch"
      */
     static std::string getVersion();
 
@@ -50,25 +50,28 @@ public:
     ~SerialPort();
 
     /**
-     * @brief Method to open serial port.
-     * @param file Serial port name string. Format depends from OS.
-     * @param baudrate Boudrate.
-     * @param timeout Wait data timeout.
+     * @brief Open serial port.
+     * @param file Serial port device name. Format depends from OS.
+     *             For Linux OS format: "/dev/serial/by-id/...", "/dev/ttyS0",
+     *             "/dev/ttyUSB0" etc. For Windows OS format "\\\\.\\COM0" etc.
+     * @param baudrate Boudrate. For example 115200.
+     * @param timeoutMsec Wait data timeout, milisseconds.
      * @param mode Mode. Always 3 simbols:
-     * 1 - Number of bits (8, 7, 6, 5),
-     * 2 - parity (N, E, O),
-     * 3 - number of stop bits (1 or 2).
-     * Example: "8N1".
-     * @return TRUE in case success or FALSE in case any errors.
+     *             1 - Number of bits (8, 7, 6, 5),
+     *             2 - parity (N, E, O),
+     *             3 - number of stop bits (1 or 2).
+     *             Example: "8N1".
+     * @return TRUE in case success or FALSE in not.
      */
     bool open(std::string file, unsigned int baudrate,
-              unsigned int timeout = 100, const char *mode = "8N1");
+              unsigned int timeoutMsec = 100, const char *mode = "8N1");
 
     /**
-     * @brief Read data from serial port.
+     * @brief Read data from serial port. The method will wait timeout specified
+     *        in open(...) method.
      * @param buf pointer to data buffer to copy.
      * @param size size of data buffer.
-     * @return Number of readed bytes or returns -1.
+     * @return Number of readed bytes or returns -1 if no input data.
      */
     int read(uint8_t *buf, uint32_t size);
 
@@ -81,20 +84,20 @@ public:
     int write(uint8_t *buf, uint32_t size);
 
     /**
-     * @brief Method to check if serial port open.
-     * @return TRUE if port open or FALSE.
+     * @brief Get open status.
+     * @return TRUE if port open or FALSE if not.
      */
     bool isOpen();
 
     /**
-     * @brief Method to close serial port.
+     * @brief Close serial port.
      */
     void close();
 
     /**
-     * @brief Method to set RTS/CTS hardware flow control.
+     * @brief Set RTS/CTS hardware flow control.
      * @param enable Enable RTS/CTS hardware flow control.
-     * @return TRUE in case success or FALSE in case any errors.
+     * @return TRUE in case success or FALSE if not.
      */
     bool setFlowControl(bool enable);
 

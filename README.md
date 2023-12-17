@@ -1,22 +1,17 @@
-
-
-
-
-![logo](_static/serial_port_logo.png)
+![logo](_static/serial_port_web_logo.png)
 
 
 
 # **SerialPort C++ library**
 
-**v3.0.1**
-
-------
+**v3.0.2**
 
 
 
 # Table of contents
 
 - [Overview](#Overview)
+- [Library files](#Library-files)
 - [Versions](#Versions)
 - [SerialPort class description](#SerialPort-class-description)
   - [Class declaration](#Class-declaration)
@@ -37,7 +32,7 @@
 
 # Overview
 
-**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency.
+**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency. The library compatible with Linux and Window OS.
 
 
 
@@ -56,119 +51,119 @@
 | 2.5.0   | 26.06.2023   | - Updated test applications (SerialPortStringTester and SerialPortTester combined into one application). |
 | 3.0.0   | 27.06.2023   | - Changed interface (added new methods read(...) and write(...) instead of readData(...) and sendData(...)). |
 | 3.0.1   | 19.07.2023   | - Fixed compiling error in methods read(...) and write(...) for Linux. |
+| 3.0.2   | 17.12.2023   | - Methods description updated.<br />- Documentation updated.<br />- Default branch name changed from "main" to "master". |
+
+
+
+# Library files
+
+The library is supplied only by source code. The user is given a set of files in the form of a CMake project (repository). The repository structure is shown below:
+
+```xml
+CMakeLists.txt ------------------- main CMake file
+src ------------------------------ folder with library source code
+    CMakeLists.txt --------------- CMake file
+    SerialPort.h ----------------- main library header file
+    SerialPortVersion.h ---------- header file with library version
+    SerialPortVersion.h.in ------- file for CMake to generate version header
+    SerialPort.cpp --------------- C++ implementation file
+examples ------------------------- folder for examples
+    CMakeLists.txt --------------- CMake file to include examples
+    SerialPortDataReceiver ------- folder with data receiver example
+        CMakeLists.txt ----------- CMake file of data receiver example
+        main.cpp ----------------- source code of data receiver example
+    SerialPortDataSender --------- folder with data sender example
+        CMakeLists.txt ----------- CMake file of data sender example
+        main.cpp ----------------- source code of data sender example
+    SerialPortTester ------------- folder with serial port tester application
+        CMakeLists.txt ----------- CMake file of serial port tester application
+        main.cpp ----------------- source code of serial port tester application
+       
+```
 
 
 
 # SerialPort class description
+
+
 
 ## Class declaration
 
 **SerialPort** class declared in **SerialPort.h** file. Class declaration:
 
 ```cpp
-namespace cr
-{
-namespace clib
-{
-/**
- * @brief Serial port class.
- */
 class SerialPort
 {
 public:
-    /**
-     * @brief Method to get string of current library version.
-     * @return String of current library version.
-     */
+
+    /// Get string of current library version.
     static std::string getVersion();
-    /**
-     * @brief Class constructor.
-     */
+
+    /// Class constructor.
     SerialPort();
-    /**
-     * @brief Class destructor.
-     */
+
+    /// Class destructor.
     ~SerialPort();
-    /**
-     * @brief Method to open serial port.
-     * @param file Serial port name string. Format depends from OS.
-     * @param baudrate Boudrate.
-     * @param timeout Wait data timeout.
-     * @param mode Mode. Always 3 simbols:
-     * 1 - Number of bits (8, 7, 6, 5),
-     * 2 - parity (N, E, O),
-     * 3 - number of stop bits (1 or 2).
-     * Example: "8N1".
-     * @return TRUE in case success or FALSE in case any errors.
-     */
+
+    /// Open serial port.
     bool open(std::string file, unsigned int baudrate,
-              unsigned int timeout = 100, const char *mode = "8N1");
-    /**
-     * @brief Read data from serial port.
-     * @param buf pointer to data buffer to copy.
-     * @param size size of data buffer.
-     * @return Number of readed bytes or returns -1.
-     */
+              unsigned int timeoutMsec = 100, const char *mode = "8N1");
+
+    /// Read data from serial port.
     int read(uint8_t *buf, uint32_t size);
-    /**
-     * @brief Write data to serial port.
-     * @param buf pointer to data to send.
-     * @param size size of data to send.
-     * @return Number of bytes sended or return -1 in case any errors.
-     */
+
+    /// Write data to serial port.
     int write(uint8_t *buf, uint32_t size);
-    /**
-     * @brief Method to check if serial port open.
-     * @return TRUE if port open or FALSE.
-     */
+
+    /// Get open status.
     bool isOpen();
-    /**
-     * @brief Method to close serial port.
-     */
+
+    /// Close serial port.
     void close();
-    /**
-     * @brief Method to set RTS/CTS hardware flow control.
-     * @param enable Enable RTS/CTS hardware flow control.
-     * @return TRUE in case success or FALSE in case any errors.
-     */
+
+    /// Set RTS/CTS hardware flow control.
     bool setFlowControl(bool enable);
 };
-}
-}
 ```
 
 
 
 ## getVersion method
 
-**getVersion()** method return string of current version **SerialPort** class. Particular lens controller can have it's own **getVersion()** method. Method declaration:
+**getVersion()** method returns string of current class version. Method declaration:
 
 ```cpp
 static std::string getVersion();
 ```
 
-Method can be used without **Lens** class instance:
+Method can be used without **SerialPort** class instance:
 
 ```cpp
-std::cout << "Serial port version: " << cr::clib::SerialPort::getVersion() << std::endl;
+cout << "Serial port version: " << SerialPort::getVersion() << endl;
+```
+
+Console output:
+
+```bash
+Serial port version: 3.0.2
 ```
 
 
 
 ## open method
 
-**open(...)** method intended to open serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
+**open(...)** method opens serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
 
 ```cpp
-bool open(std::string file, unsigned int baudrate, unsigned int timeout = 100, const char *mode = "8N1");
+bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 100, const char *mode = "8N1");
 ```
 
-| Parameter | Value                                                        |
-| --------- | ------------------------------------------------------------ |
-| file      | Full serial port file name. In **Windows** serial ports are named **\\\\.\\COM**. In typical **UNIX** style, serial ports are represented by files within the operating system. These files usually pop-up in `/dev/`, and begin with the name `tty*`. Common names are:  <br />**/dev/ttyACM0**- ACM stands for the ACM modem on the USB bus. Arduino UNOs (and similar) will appear using this name.<br />**/dev/ttyPS0** - Xilinx Zynq FPGAs running a Yocto-based Linux build will use this name for the default serial port that Getty connects to.<br /> **/dev/ttyS0** - Standard COM ports will have this name. These are less common these days with newer desktops and laptops not having actual COM ports.<br />**/dev/ttyUSB0** *- Most USB-to-serial cables will show up using a file named like this.<br />**/dev/pts/0** - A pseudo terminal. These can be generated with socat. |
-| baudrate  | Baudrate e.g. 2400, 4800, 9600, 19200, 38400, 57600, 115200 etc. |
-| timeout   | Timeout in milliseconds for reading data from serial port. When user call **readData(...)** method it will wait **timeout** msec and will return all data from input serial port buffer. |
-| mode      | Mode. Default "8N1" most common. Always 3 symbols:<br/>1 - Number of bits (8, 7, 6, 5),<br/>2 - parity (N, E, O),<br/>3 - number of stop bits (1 or 2). |
+| Parameter   | Value                                                        |
+| ----------- | ------------------------------------------------------------ |
+| file        | Full serial port file name (serial device name). In **Windows** serial ports are named **\\\\.\\COM**. In typical **UNIX** style, serial ports are represented by files within the operating system. These files usually pop-up in `/dev/`, and begin with the name `tty*`. Common names are:  <br />**/dev/ttyACM0**- ACM stands for the ACM modem on the USB bus. Arduino UNOs (and similar) will appear using this name.<br />**/dev/ttyPS0** - Xilinx Zynq FPGAs running a Yocto-based Linux build will use this name for the default serial port that Getty connects to.<br /> **/dev/ttyS0** - Standard COM ports will have this name. These are less common these days with newer desktops and laptops not having actual COM ports.<br />**/dev/ttyUSB0** *- Most USB-to-serial cables will show up using a file named like this.<br />**/dev/pts/0** - A pseudo terminal. These can be generated with socat. |
+| baudrate    | Baudrate e.g. 2400, 4800, 9600, 19200, 38400, 57600, 115200 etc. |
+| timeoutMsec | Timeout in milliseconds for reading data from serial port. When user call **readData(...)** method it will wait **timeout** msec and will return all data from input serial port buffer. |
+| mode        | Mode. Default "8N1" most common. Always 3 symbols:<br/>1 - Number of bits (8, 7, 6, 5),<br/>2 - parity (N, E, O),<br/>3 - number of stop bits (1 or 2). |
 
 **Returns:** TRUE if the serial port open or FALSE if not.
 
@@ -176,7 +171,7 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeout = 100, c
 
 ## read method
 
-**read(...)** method intended to read data from serial port. Method will wait **timeout** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
+**read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
 
 ```cpp
 int read(uint8_t *buf, uint32_t size);
@@ -435,7 +430,7 @@ src
     yourLib.cpp
 ```
 
-You can add repository **SerialPort** as submodule by command:
+You can add repository **SerialPort** as submodule by command (or just copy files):
 
 ```bash
 cd <your respository folder>
@@ -542,7 +537,7 @@ You will see dialog to enter serial port name. On **Windows OS** you should set 
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.2
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -595,7 +590,7 @@ After you will be able to enter message to send. In HEX mode you have to print s
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.2
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0 
@@ -614,7 +609,7 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.2
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
