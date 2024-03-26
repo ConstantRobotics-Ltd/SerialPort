@@ -204,10 +204,10 @@ bool SerialPort::open(
 
     struct termios port_settings;
     memset(&port_settings, 0, sizeof(port_settings));
-    port_settings.c_cflag = cbits | cpar | bstop | CLOCAL | CREAD; // control mode flags
+    port_settings.c_cflag = cbits | cpar | bstop | CLOCAL | CREAD; // control mode flags.
     port_settings.c_iflag = ipar; // input mode flags
     port_settings.c_iflag &= ~(IXON | IXOFF | IXANY); // Turn off software based flow control (XON / XOFF).
-    port_settings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG); // NON Cannonical mode
+    port_settings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG); // NON standard mode.
     port_settings.c_oflag = 0; // output mode flags  */
     port_settings.c_lflag = 0; // local mode flags   */
     port_settings.c_cc[VMIN] = 0;

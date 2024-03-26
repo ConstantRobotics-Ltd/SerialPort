@@ -35,6 +35,11 @@ int main(void)
     cout << "Set baudrate: ";
     cin >> baudrate;
 
+    // Set wait data timeout.
+    int timeoutMsec = 1000;
+    cout << "Set wait data timeout (msec): ";
+    cin >> timeoutMsec;
+
     // Chose mode.
     int mode = 0;
     cout << "Chose mode (1 - string, 0 - HEX): ";
@@ -108,7 +113,7 @@ int main(void)
         }
 
         // Wait.
-        this_thread::sleep_for(seconds(2));
+        this_thread::sleep_for(milliseconds(timeoutMsec));
 
         // Wait data from serial port. Wait 1 sec.
         bytes = serialPort.read(buffer, bufferSize);

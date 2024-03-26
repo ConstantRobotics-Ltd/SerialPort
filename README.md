@@ -1,38 +1,38 @@
-![logo](_static/serial_port_web_logo.png)
+![serial_port_web_logo](_static/serial_port_web_logo.png)
 
 
 
 # **SerialPort C++ library**
 
-**v3.0.2**
+**v3.0.3**
 
 
 
 # Table of contents
 
-- [Overview](#Overview)
-- [Library files](#Library-files)
-- [Versions](#Versions)
-- [SerialPort class description](#SerialPort-class-description)
-  - [Class declaration](#Class-declaration)
-  - [getVersion method](#getVersion-method)
+- [Overview](#overview)
+- [Versions](#versions)
+- [Library files](#library-files)
+- [SerialPort class description](#serialport-class-description)
+  - [SerialPort class declaration](#serialport-class-declaration)
+  - [getVersion method](#getversion-method)
   - [open method](#open-method)
   - [read method](#read-method)
   - [write method](#write-method)
-  - [isOpen method](#isOpen-method)
+  - [isOpen method](#isopen-method)
   - [close method](#close-method)
-  - [setFlowControl method](#setFlowControl-method)
-- [Examples](#Examples)
-  - [Data sender example](#Data-sender-example)
-  - [Data receiver example](#Data-receiver-example)
-- [Build and connect to your project](#Build-and-connect-to-your-project)
-- [SerialPortTester application](#SerialPortTester-application)
+  - [setFlowControl method](#setflowcontrol-method)
+- [Examples](#examples)
+  - [Data sender example](#data-sender-example)
+  - [Data receiver example](#data-receiver-example)
+- [Build and connect to your project](#build-and-connect-to-your-project)
+- [SerialPortTester application](#serialPortTester-application)
 
 
 
 # Overview
 
-**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency. The library compatible with Linux and Window OS.
+**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency. The library compatible with Linux and Window OS. The library is licensed under the **Apache 2.0** license.
 
 
 
@@ -52,6 +52,7 @@
 | 3.0.0   | 27.06.2023   | - Changed interface (added new methods read(...) and write(...) instead of readData(...) and sendData(...)). |
 | 3.0.1   | 19.07.2023   | - Fixed compiling error in methods read(...) and write(...) for Linux. |
 | 3.0.2   | 17.12.2023   | - Methods description updated.<br />- Documentation updated.<br />- Default branch name changed from "main" to "master". |
+| 3.0.3   | 26.03.2024   | - Test application updated.<br />- Documentation updated.    |
 
 
 
@@ -60,14 +61,14 @@
 The library is supplied only by source code. The user is given a set of files in the form of a CMake project (repository). The repository structure is shown below:
 
 ```xml
-CMakeLists.txt ------------------- main CMake file
-src ------------------------------ folder with library source code
-    CMakeLists.txt --------------- CMake file
-    SerialPort.h ----------------- main library header file
-    SerialPortVersion.h ---------- header file with library version
-    SerialPortVersion.h.in ------- file for CMake to generate version header
-    SerialPort.cpp --------------- C++ implementation file
-examples ------------------------- folder for examples
+CMakeLists.txt ------------------- Main CMake file of the library.
+src ------------------------------ Folder with library source code.
+    CMakeLists.txt --------------- CMake file of the library.
+    SerialPort.h ----------------- Main library header file.
+    SerialPortVersion.h ---------- Header file with library version.
+    SerialPortVersion.h.in ------- CMake service file to generate version header.
+    SerialPort.cpp --------------- C++ implementation file.
+examples ------------------------- Folder with examples.
     CMakeLists.txt --------------- CMake file to include examples
     SerialPortDataReceiver ------- folder with data receiver example
         CMakeLists.txt ----------- CMake file of data receiver example
@@ -87,7 +88,7 @@ examples ------------------------- folder for examples
 
 
 
-## Class declaration
+## SerialPort class declaration
 
 **SerialPort** class declared in **SerialPort.h** file. Class declaration:
 
@@ -130,7 +131,7 @@ public:
 
 ## getVersion method
 
-**getVersion()** method returns string of current class version. Method declaration:
+The **getVersion()** method returns string of current class version. Method declaration:
 
 ```cpp
 static std::string getVersion();
@@ -145,14 +146,14 @@ cout << "Serial port version: " << SerialPort::getVersion() << endl;
 Console output:
 
 ```bash
-Serial port version: 3.0.2
+Serial port version: 3.0.3
 ```
 
 
 
 ## open method
 
-**open(...)** method opens serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
+The **open(...)** method opens serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
 
 ```cpp
 bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 100, const char *mode = "8N1");
@@ -171,7 +172,7 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 10
 
 ## read method
 
-**read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
+The **read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
 
 ```cpp
 int read(uint8_t *buf, uint32_t size);
@@ -188,7 +189,7 @@ int read(uint8_t *buf, uint32_t size);
 
 ## write method
 
-**write(...)** method intended to send data to serial port. Method declaration:
+The **write(...)** method intended to send data to serial port. Method declaration:
 
 ```cpp
 int write(uint8_t *buf, uint32_t size);
@@ -205,7 +206,7 @@ int write(uint8_t *buf, uint32_t size);
 
 ## isOpen method
 
-**isOpen()** method intended to obtain serial port connection status. Method declaration:
+The **isOpen()** method intended to obtain serial port connection status. Method declaration:
 
 ```cpp
 bool isOpen();
@@ -217,7 +218,7 @@ bool isOpen();
 
 ## close method
 
-**close()** method intended to close serial port. Method declaration:
+The **close()** method intended to close serial port. Method declaration:
 
 ```cpp
 void close();
@@ -227,7 +228,7 @@ void close();
 
 ## setFlowControl method
 
-setFlowControl(...) method intended to set RTS/CTS hardware flow control. RTS / CTS Flow Control is **another flow control mechanism that is part of the RS232 standard**. It makes use of two further pins on the RS232 connector, RTS (Request to Send) and CTS (Clear to Send). These two lines allow the receiver and the transmitter to alert each other to their state. Method declaration:
+The **setFlowControl(...)** method intended to set RTS/CTS hardware flow control. RTS / CTS Flow Control is **another flow control mechanism that is part of the RS232 standard**. It makes use of two further pins on the RS232 connector, RTS (Request to Send) and CTS (Clear to Send). These two lines allow the receiver and the transmitter to alert each other to their state. Method declaration:
 
 ```cpp
 bool setFlowControl(bool enable);
@@ -254,54 +255,41 @@ bool setFlowControl(bool enable);
 #include <thread>
 #include "SerialPort.h"
 
-/// Link namespaces.
 using namespace std;
 using namespace cr::clib;
 using namespace std::chrono;
 
-// Entry point.
 int main(void)
 {
-    cout<< "=================================================" << endl;
-    cout<< "SerialPortDataSender " << SerialPort::getVersion() << endl;
-    cout<< "=================================================" << endl;
-    cout<< endl;
+    cout << "Data sender example v" << SerialPort::getVersion() << endl;
 
-    // Enter serial port num.
     int portNum = 0;
     cout << "Enter serial port num: ";
     cin >> portNum;
 
-    // Enter serial port baudrate.
     int portBaudrate = 0;
     cout << "Enter serial port baudrate: ";
     cin >> portBaudrate;
 
-    // Enter numer of bytes.
     int numBytesToSend = 0;
     cout << "Enter num bytes to send: ";
     cin >> numBytesToSend;
 
-    // Enter sending data period ms.
     int cyclePeriodMs = 0;
     cout << "Enter sending data period ms: ";
     cin >> cyclePeriodMs;
 
-    // Open serial port.
-#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
+    // Define serial port name.
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
     std::string portName = "/dev/ttyS" + std::to_string(portNum);
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     string portName = "\\\\.\\COM" + to_string(portNum);
 #endif
 
-    // Init serial port.
+    // Open serial port.
     SerialPort serialPort;
-    if (!serialPort.open(portName.c_str(), portBaudrate))
-    {
-        cout << "ERROR: Serial port not open. Exit." << endl;
-        this_thread::sleep_for(seconds(1));
+    if (!serialPort.open(portName, portBaudrate))
         return -1;
-    }
 
     // Init variables.
     uint8_t* outputData = new uint8_t[numBytesToSend];
@@ -326,7 +314,6 @@ int main(void)
             this_thread::sleep_for(milliseconds(waitTime));
         startTime = system_clock::now();
     }
-
     return 1;
 }
 ```
@@ -342,66 +329,51 @@ int main(void)
 #include <thread>
 #include "SerialPort.h"
 
-/// Link namespaces.
 using namespace std;
 using namespace cr::clib;
 using namespace std::chrono;
 
-// Entry point.
 int main(void)
 {
-    cout<< "==================================================" << endl;
-    cout<< "SerialPortDataReceiver " << SerialPort::getVersion()<< endl;
-    cout<< "==================================================" << endl;
-    cout<< endl;
+    cout << "Data receiver example v" << SerialPort::getVersion() << endl;
 
-    // Enter serial port num.
     int portNum = 0;
     cout << "Enter serial port num: ";
     cin >> portNum;
 
-    // Enter serial port baudrate.
     int portBaudrate = 0;
     cout << "Enter serial port baudrate: ";
     cin >> portBaudrate;
 
-    // Enter wait data timeout.
     int waitDataTimeoutMs = 0;
     cout << "Enter wait data timeout ms: ";
     cin >> waitDataTimeoutMs;
 
-    // Open serial port.
-#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
+    // Define serial port name.
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
     std::string portName = "/dev/ttyS" + std::to_string(portNum);
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     string portName = "\\\\.\\COM" + to_string(portNum);
 #endif
 
-    // Init serial port.
+    // Open serial port.
     SerialPort serialPort;
-    if (!serialPort.open(portName.c_str(), portBaudrate, waitDataTimeoutMs))
-    {
-        cout << "ERROR: Serial port not open. Exit" << endl;
-        this_thread::sleep_for(seconds(1));
+    if (!serialPort.open(portName, portBaudrate, waitDataTimeoutMs))
         return -1;
-    }
-
-    // Init variables.
-    const uint16_t inputDataSize = 1024;
-    uint8_t inputData[inputDataSize];
 
     // Main loop.
+    uint8_t inputData[1024];
     while (true)
     {
         // Read data.
-        int bytes = serialPort.read(inputData, inputDataSize);
+        int bytes = serialPort.read(inputData, 1024);
 
-        // Check input data size.
         if (bytes <= 0)
             cout << "No input data" << endl;
         else
             cout << bytes << " bytes read." << endl;
     }
+    return 1;
 }
 ```
 
@@ -521,7 +493,7 @@ Done!
 
 **SerialPortTester** is application designed to test communication with any equipment via serial port. The app allows the user to send any data (manual input) to the serial port and check the response from the equipment. The app allows data entry in both HEX and string format (for ASCII protocols). The application supports Windows and Linux OS. How to use:
 
-Copy executable file SerialPortTester and make it executable:
+Copy executable file SerialPortTester and make it executable (in Linux):
 
 ```bash
 sudo chmod +x SerialPortTester
@@ -537,7 +509,7 @@ You will see dialog to enter serial port name. On **Windows OS** you should set 
 
 ```bash
 ================================================
-Serial port tester v3.0.2
+Serial port tester v3.0.3
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -547,7 +519,7 @@ On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (f
 
 ```bash
 ================================================
-Serial port tester v3.0.2
+Serial port tester v3.0.3
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -557,7 +529,7 @@ After you have to set baudrate:
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.3
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -567,22 +539,35 @@ After you have to set baudrate and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.3
 ================================================
 
 Set serial port name: /dev/ttyUSB0
 Set baudrate: 115200
 ```
 
-After you have to set chose mode: string mode (you will be able print text for ASCII protocols) or HEX mode (you will be able to print HEX values):
+After you have to set wait data timeout (after sending data the application will wait response) and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v3.0.1
+Serial port tester v3.0.3
 ================================================
 
 Set serial port name: /dev/ttyUSB0
 Set baudrate: 115200
+Set wait data timeout (msec): 2000
+```
+
+After you have to set chose mode: string mode (you will be able print text for ASCII protocols) or HEX mode (you will be able to print HEX values):
+
+```bash
+================================================
+Serial port tester v3.0.3
+================================================
+
+Set serial port name: /dev/ttyUSB0
+Set baudrate: 115200
+Set wait data timeout (msec): 2000
 Chose mode (1 - string, 0 - HEX): 0
 ```
 
@@ -593,8 +578,9 @@ After you will be able to enter message to send. In HEX mode you have to print s
 Serial port tester v3.0.2
 ================================================
 
-Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0 
+Set serial port name: /dev/ttyUSB0 
 Set baudrate: 115200
+Set wait data timeout (msec): 2000
 Chose mode (1 - string, 0 - HEX): 0
 Enter HEX string (e.g. AAF00A): AA040170001FEBAA
 [TX]: aa 4 1 70 0 1f eb aa 
@@ -609,11 +595,12 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v3.0.2
+Serial port tester v3.0.3
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
 Set baudrate: 115200
+Set wait data timeout (msec): 2000
 Chose mode (1 - string, 0 - HEX): 1
 Enter string: TestMessage
 [TX]: 54 65 73 74 4d 65 73 73 61 67 65 d a 

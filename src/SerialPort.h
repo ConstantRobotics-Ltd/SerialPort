@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <atomic>
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #include <termios.h>
 #include <sys/ioctl.h>
@@ -104,7 +105,7 @@ public:
 private:
 
     /// Port initialization flag.
-    bool m_initFlag{false};
+    std::atomic<bool> m_initFlag{false};
     /// Read data timeout.
     int m_timeoutMs{0};
     /// Port handle.
