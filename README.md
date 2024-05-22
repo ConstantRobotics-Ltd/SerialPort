@@ -1,10 +1,10 @@
-![serial_port_web_logo](_static/serial_port_web_logo.png)
+![serial_port_web_logo](./static/serial_port_web_logo.png)
 
 
 
 # **SerialPort C++ library**
 
-**v3.0.3**
+**v3.0.4**
 
 
 
@@ -53,6 +53,7 @@
 | 3.0.1   | 19.07.2023   | - Fixed compiling error in methods read(...) and write(...) for Linux. |
 | 3.0.2   | 17.12.2023   | - Methods description updated.<br />- Documentation updated.<br />- Default branch name changed from "main" to "master". |
 | 3.0.3   | 26.03.2024   | - Test application updated.<br />- Documentation updated.    |
+| 3.0.4   | 22.05.2024   | - Documentation updated.                                     |
 
 
 
@@ -61,25 +62,24 @@
 The library is supplied only by source code. The user is given a set of files in the form of a CMake project (repository). The repository structure is shown below:
 
 ```xml
-CMakeLists.txt ------------------- Main CMake file of the library.
-src ------------------------------ Folder with library source code.
-    CMakeLists.txt --------------- CMake file of the library.
-    SerialPort.h ----------------- Main library header file.
-    SerialPortVersion.h ---------- Header file with library version.
-    SerialPortVersion.h.in ------- CMake service file to generate version header.
-    SerialPort.cpp --------------- C++ implementation file.
-examples ------------------------- Folder with examples.
-    CMakeLists.txt --------------- CMake file to include examples
-    SerialPortDataReceiver ------- folder with data receiver example
-        CMakeLists.txt ----------- CMake file of data receiver example
-        main.cpp ----------------- source code of data receiver example
-    SerialPortDataSender --------- folder with data sender example
-        CMakeLists.txt ----------- CMake file of data sender example
-        main.cpp ----------------- source code of data sender example
-    SerialPortTester ------------- folder with serial port tester application
-        CMakeLists.txt ----------- CMake file of serial port tester application
-        main.cpp ----------------- source code of serial port tester application
-       
+CMakeLists.txt -------------- Main CMake file of the library.
+src ------------------------- Folder with library source code.
+    CMakeLists.txt ---------- CMake file of the library.
+    SerialPort.h ------------ Main library header file.
+    SerialPortVersion.h ----- Header file with library version.
+    SerialPortVersion.h.in -- Service CMake file to generate version header.
+    SerialPort.cpp ---------- C++ implementation file.
+examples -------------------- Folder with examples.
+    CMakeLists.txt ---------- CMake file to include examples.
+    SerialPortDataReceiver -- Folder with data receiver example.
+        CMakeLists.txt ------ CMake file of data receiver example.
+        main.cpp ------------ Source code of data receiver example.
+    SerialPortDataSender ---- Folder with data sender example.
+        CMakeLists.txt ------ CMake file of data sender example.
+        main.cpp ------------ Source code of data sender example.
+    SerialPortTester -------- Folder with serial port tester application.
+        CMakeLists.txt ------ CMake file of serial port tester application.
+        main.cpp ------------ Source code of serial port tester application.
 ```
 
 
@@ -146,7 +146,7 @@ cout << "Serial port version: " << SerialPort::getVersion() << endl;
 Console output:
 
 ```bash
-Serial port version: 3.0.3
+Serial port version: 3.0.4
 ```
 
 
@@ -509,7 +509,7 @@ You will see dialog to enter serial port name. On **Windows OS** you should set 
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -519,7 +519,7 @@ On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (f
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -529,7 +529,7 @@ After you have to set baudrate:
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -539,7 +539,7 @@ After you have to set baudrate and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -550,7 +550,7 @@ After you have to set wait data timeout (after sending data the application will
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -562,7 +562,7 @@ After you have to set chose mode: string mode (you will be able print text for A
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -575,7 +575,7 @@ After you will be able to enter message to send. In HEX mode you have to print s
 
 ```bash
 ================================================
-Serial port tester v3.0.2
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/ttyUSB0 
@@ -595,7 +595,7 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v3.0.3
+Serial port tester v3.0.4
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
