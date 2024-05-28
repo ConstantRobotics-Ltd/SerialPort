@@ -59,9 +59,31 @@ int SerialPort::read(uint8_t *buf, uint32_t size)
         return -1;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
-    if (m_timeoutMs > 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(m_timeoutMs));
-    return ::read(m_port, buf, size);
+    //if (m_timeoutMs > 0)
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeoutMs));
+    //return ::read(m_port, buf, size);
+
+    fd_set read_fds;
+    struct timeval timeout;
+    FD_ZERO(&read_fds);
+    FD_SET(m_port, &read_fds);
+    timeout.tv_sec = m_timeoutMs / 1000;
+    timeout.tv_usec = (m_timeoutMs % 1000) * 1000;
+    int ret = select(m_port + 1, &read_fds, NULL, NULL, &timeout);
+    if (ret > 0) 
+    {
+        return ::read(m_port, buf, size);
+    } 
+    else if (ret == 0) 
+    {
+        // Timeout
+        return 0;
+    } 
+    else 
+    {
+        // Error
+        return -1;
+    }
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     int n;
     if (ReadFile(m_port, buf, size, (LPDWORD)((void*)&n), NULL))
