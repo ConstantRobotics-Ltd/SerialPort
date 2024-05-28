@@ -105,6 +105,7 @@ bool SerialPort::open(
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
 
+    bool isSBUS{false};
     int baudr = 0;
     switch (baudrate)
     {
@@ -138,6 +139,7 @@ bool SerialPort::open(
     case 3000000: baudr = B3000000; break;
     case 3500000: baudr = B3500000; break;
     case 4000000: baudr = B4000000; break;
+    case 100000: isSBUS = true; break;
     default: return false;
     }
 
@@ -200,6 +202,24 @@ bool SerialPort::open(
     if (flock(m_port, LOCK_EX | LOCK_NB) != 0) {
         close();
         return false;
+    }
+
+    if(isSBUS)
+    {
+        struct termios port_settings;
+        memset(&port_settings, 0, sizeof(port_settings));
+        port_settings.c_cflag = CS8 | CLOCAL | CREAD; // control mode flags.
+        port_settings.c_iflag = INPCK | PARENB | CSTOPB; // input mode flags
+        port_settings.c_ispeed = 1000;
+        port_settings.c_ospeed = 1000;
+        if (tcsetattr(m_port, TCSANOW, &port_settings) == -1) 
+        {
+            return false;
+        }
+
+        m_initFlag = true;
+
+        return true;
     }
 
     struct termios port_settings;
