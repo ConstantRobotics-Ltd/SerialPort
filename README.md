@@ -4,7 +4,7 @@
 
 # **SerialPort C++ library**
 
-**v3.0.4**
+**v3.0.5**
 
 
 
@@ -54,6 +54,7 @@
 | 3.0.2   | 17.12.2023   | - Methods description updated.<br />- Documentation updated.<br />- Default branch name changed from "main" to "master". |
 | 3.0.3   | 26.03.2024   | - Test application updated.<br />- Documentation updated.    |
 | 3.0.4   | 22.05.2024   | - Documentation updated.                                     |
+| 3.0.5   | 30.05.2024   | - SBUS protocol baudrate (100000) added.<br/>- Wait data timeout mechanism changed for Linux. |
 
 
 
@@ -146,7 +147,7 @@ cout << "Serial port version: " << SerialPort::getVersion() << endl;
 Console output:
 
 ```bash
-Serial port version: 3.0.4
+Serial port version: 3.0.5
 ```
 
 
@@ -172,7 +173,7 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 10
 
 ## read method
 
-The **read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
+The **read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If data will come before timeout expired the method will return control. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
 
 ```cpp
 int read(uint8_t *buf, uint32_t size);
@@ -509,7 +510,7 @@ You will see dialog to enter serial port name. On **Windows OS** you should set 
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -519,7 +520,7 @@ On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (f
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -529,7 +530,7 @@ After you have to set baudrate:
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -539,7 +540,7 @@ After you have to set baudrate and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -550,7 +551,7 @@ After you have to set wait data timeout (after sending data the application will
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -562,7 +563,7 @@ After you have to set chose mode: string mode (you will be able print text for A
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -575,7 +576,7 @@ After you will be able to enter message to send. In HEX mode you have to print s
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/ttyUSB0 
@@ -595,7 +596,7 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v3.0.4
+Serial port tester v3.0.5
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0
