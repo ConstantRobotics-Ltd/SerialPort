@@ -59,9 +59,31 @@ int SerialPort::read(uint8_t *buf, uint32_t size)
         return -1;
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
-    if (m_timeoutMs > 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(m_timeoutMs));
-    return ::read(m_port, buf, size);
+    //if (m_timeoutMs > 0)
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeoutMs));
+    //return ::read(m_port, buf, size);
+
+    fd_set read_fds;
+    struct timeval timeout;
+    FD_ZERO(&read_fds);
+    FD_SET(m_port, &read_fds);
+    timeout.tv_sec = m_timeoutMs / 1000;
+    timeout.tv_usec = (m_timeoutMs % 1000) * 1000;
+    int ret = select(m_port + 1, &read_fds, NULL, NULL, &timeout);
+    if (ret > 0) 
+    {
+        return ::read(m_port, buf, size);
+    } 
+    else if (ret == 0) 
+    {
+        // Timeout
+        return 0;
+    } 
+    else 
+    {
+        // Error
+        return -1;
+    }
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     int n;
     if (ReadFile(m_port, buf, size, (LPDWORD)((void*)&n), NULL))
@@ -105,6 +127,7 @@ bool SerialPort::open(
 
 #if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
 
+    bool isSBUS{false};
     int baudr = 0;
     switch (baudrate)
     {
@@ -138,6 +161,7 @@ bool SerialPort::open(
     case 3000000: baudr = B3000000; break;
     case 3500000: baudr = B3500000; break;
     case 4000000: baudr = B4000000; break;
+    case 100000: isSBUS = true; break;
     default: return false;
     }
 
@@ -200,6 +224,24 @@ bool SerialPort::open(
     if (flock(m_port, LOCK_EX | LOCK_NB) != 0) {
         close();
         return false;
+    }
+
+    if(isSBUS)
+    {
+        struct termios port_settings;
+        memset(&port_settings, 0, sizeof(port_settings));
+        port_settings.c_cflag = CS8 | CLOCAL | CREAD; // control mode flags.
+        port_settings.c_iflag = INPCK | PARENB | CSTOPB; // input mode flags
+        port_settings.c_ispeed = 1000;
+        port_settings.c_ospeed = 1000;
+        if (tcsetattr(m_port, TCSANOW, &port_settings) == -1) 
+        {
+            return false;
+        }
+
+        m_initFlag = true;
+
+        return true;
     }
 
     struct termios port_settings;
