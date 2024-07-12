@@ -12,24 +12,23 @@ int main(void)
 {
     cout << "Data receiver example v" << SerialPort::getVersion() << endl;
 
-    int portNum = 0;
-    cout << "Enter serial port num: ";
-    cin >> portNum;
+    string portName = "";
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
+    cout << "Enter serial port name (e.g. /dev/ttyS0): ";
+    cin >> portName;
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    cout << "Enter serial port num (1, 2 ..): ";
+    cin >> portName;
+    portName = "\\\\.\\COM" + portName;
+#endif
 
-    int portBaudrate = 0;
+    int portBaudrate = 115200;
     cout << "Enter serial port baudrate: ";
     cin >> portBaudrate;
 
     int waitDataTimeoutMs = 0;
-    cout << "Enter wait data timeout ms: ";
+    cout << "Enter wait data timeout, msec: ";
     cin >> waitDataTimeoutMs;
-
-    // Define serial port name.
-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
-    std::string portName = "/dev/ttyS" + std::to_string(portNum);
-#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    string portName = "\\\\.\\COM" + to_string(portNum);
-#endif
 
     // Open serial port.
     SerialPort serialPort;

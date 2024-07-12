@@ -4,7 +4,7 @@
 
 # **SerialPort C++ library**
 
-**v3.0.5**
+**v3.1.0**
 
 
 
@@ -26,13 +26,13 @@
   - [Data sender example](#data-sender-example)
   - [Data receiver example](#data-receiver-example)
 - [Build and connect to your project](#build-and-connect-to-your-project)
-- [SerialPortTester application](#serialPortTester-application)
+- [SerialPortTester application](#serialporttester-application)
 
 
 
 # Overview
 
-**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. SerialPort library also provides applications to test communication with any equipment (send data and check response). The library requires C++17 standard. The library doesn't have any third-party dependency. The library compatible with Linux and Window OS. The library is licensed under the **Apache 2.0** license.
+**SerialPort** C++ library provides simple interface to work with serial ports. **SerialPort.h** file contains declaration of **SerialPort** C++ class. **SerialPort** has functions: open, write data and read data from serial port. **SerialPort** library also provides applications to test communication with any equipment (send data and check response). It requires C++17 standard. The library doesn't have any third-party dependency and compatible with Linux and Window OS. The library is licensed under the **Apache 2.0** license.
 
 
 
@@ -54,7 +54,8 @@
 | 3.0.2   | 17.12.2023   | - Methods description updated.<br />- Documentation updated.<br />- Default branch name changed from "main" to "master". |
 | 3.0.3   | 26.03.2024   | - Test application updated.<br />- Documentation updated.    |
 | 3.0.4   | 22.05.2024   | - Documentation updated.                                     |
-| 3.0.5   | 30.05.2024   | - SBUS protocol baudrate (100000) added.<br/>- Wait data timeout mechanism changed for Linux. |
+| 3.0.5   | 30.05.2024   | - SBUS protocol baudrate (100000) added for Linux.<br/>- Wait data timeout mechanism changed for Linux. |
+| 3.1.0   | 12.07.2024   | - Synchronized behavior on Linux and Windows.<br/>- CMake updated. |
 
 
 
@@ -65,6 +66,9 @@ The library is supplied only by source code. The user is given a set of files in
 ```xml
 CMakeLists.txt -------------- Main CMake file of the library.
 src ------------------------- Folder with library source code.
+    Impl -------------------- Folder with serial port implementation files.
+        SerialPortImpl.h ---- Header file of serial port implementation.
+        SerialPortImpl.cpp -- C++ implementation file.
     CMakeLists.txt ---------- CMake file of the library.
     SerialPort.h ------------ Main library header file.
     SerialPortVersion.h ----- Header file with library version.
@@ -94,6 +98,11 @@ examples -------------------- Folder with examples.
 **SerialPort** class declared in **SerialPort.h** file. Class declaration:
 
 ```cpp
+namespace cr
+{
+namespace clib
+{
+/// Serial port class.
 class SerialPort
 {
 public:
@@ -126,6 +135,8 @@ public:
     /// Set RTS/CTS hardware flow control.
     bool setFlowControl(bool enable);
 };
+}
+}
 ```
 
 
@@ -147,14 +158,14 @@ cout << "Serial port version: " << SerialPort::getVersion() << endl;
 Console output:
 
 ```bash
-Serial port version: 3.0.5
+Serial port version: 3.1.0
 ```
 
 
 
 ## open method
 
-The **open(...)** method opens serial port. If serial port already open the method firstly will close serial port and will try open again according to method's parameters. Method declaration:
+The **open(...)** method opens serial port. If serial port already open the method firstly will close serial port and will try open again according to new parameters. Method declaration:
 
 ```cpp
 bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 100, const char *mode = "8N1");
@@ -162,10 +173,10 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 10
 
 | Parameter   | Value                                                        |
 | ----------- | ------------------------------------------------------------ |
-| file        | Full serial port file name (serial device name). In **Windows** serial ports are named **\\\\.\\COM**. In typical **UNIX** style, serial ports are represented by files within the operating system. These files usually pop-up in `/dev/`, and begin with the name `tty*`. Common names are:  <br />**/dev/ttyACM0**- ACM stands for the ACM modem on the USB bus. Arduino UNOs (and similar) will appear using this name.<br />**/dev/ttyPS0** - Xilinx Zynq FPGAs running a Yocto-based Linux build will use this name for the default serial port that Getty connects to.<br /> **/dev/ttyS0** - Standard COM ports will have this name. These are less common these days with newer desktops and laptops not having actual COM ports.<br />**/dev/ttyUSB0** *- Most USB-to-serial cables will show up using a file named like this.<br />**/dev/pts/0** - A pseudo terminal. These can be generated with socat. |
+| file        | Full serial port file name (serial device name). In **Windows** serial ports are named **\\\\.\\COM(N)**. In typical **Linux / UNIX** style, serial ports are represented by files within the operating system. These files usually pop-up in `/dev/`, and begin with the name `tty*`. Common names are:  <br />**/dev/ttyACM0**- ACM stands for the ACM modem on the USB bus. Arduino UNOs (and similar) will appear using this name.<br />**/dev/ttyPS0** - Xilinx Zynq FPGAs running a Yocto-based Linux build will use this name for the default serial port.<br /> **/dev/ttyS0** - Standard COM ports will have this name. These are less common these days with newer desktops and laptops not having actual COM ports.<br />**/dev/ttyUSB0** - Most USB-to-serial cables will show up using a file named like this.<br />**/dev/pts/0** - A pseudo terminal. These can be generated with [socat](https://linux.die.net/man/1/socat). |
 | baudrate    | Baudrate e.g. 2400, 4800, 9600, 19200, 38400, 57600, 115200 etc. |
-| timeoutMsec | Timeout in milliseconds for reading data from serial port. When user call **readData(...)** method it will wait **timeout** msec and will return all data from input serial port buffer. |
-| mode        | Mode. Default "8N1" most common. Always 3 symbols:<br/>1 - Number of bits (8, 7, 6, 5),<br/>2 - parity (N, E, O),<br/>3 - number of stop bits (1 or 2). |
+| timeoutMsec | Timeout in milliseconds for reading data from serial port. When user call [read(...)](#read-method) method it will check if there is any data in serial prot and if data exists the method will return data. If not any data in serial port the [read(...)](#read-method) method will wait **timeoutMsec** msec maximum time until data will come or return negative result if no data withing **timeoutMsec**. If **timeoutMsec == 0** the [read(...)](#read-method) method just will check if there is any data in serial port.  |
+| mode        | Mode. Default **"8N1"** most common. Always 3 symbols:<br/>1 - Number of bits (8, 7, 6, 5),<br/>2 - parity (N, E, O),<br/>3 - number of stop bits (1 or 2). |
 
 **Returns:** TRUE if the serial port open or FALSE if not.
 
@@ -173,7 +184,7 @@ bool open(std::string file, unsigned int baudrate, unsigned int timeoutMsec = 10
 
 ## read method
 
-The **read(...)** method reads data from serial port. Method will wait **timeoutMsec** (set by user in **open(...)** method) and will return all data (<= requested amount of data) from input serial port buffer. If data will come before timeout expired the method will return control. If you don't want to wait and just check data in serial port or if you want to use different timeouts to wait data set **timeout = 0** in open(...) method. Method declaration:
+The **read(...)** method reads data from serial port. When user call **read(...)** method it will check if there is any data in serial prot and if data exists the method will return data. If no any data in serial port the **read(...)** method will wait **timeoutMsec** msec maximum time (set by user in [open(...)](#open-method) method) until data will come or return negative result if no data withing **timeoutMsec**. If you don't want to wait and just check data in serial port set **timeoutMsec = 0** in [open(...)](#open-method) method. Method declaration:
 
 ```cpp
 int read(uint8_t *buf, uint32_t size);
@@ -219,7 +230,7 @@ bool isOpen();
 
 ## close method
 
-The **close()** method intended to close serial port. Method declaration:
+The **close()** method intended to close serial port. Method will close serial port if it open. Method declaration:
 
 ```cpp
 void close();
@@ -229,7 +240,7 @@ void close();
 
 ## setFlowControl method
 
-The **setFlowControl(...)** method intended to set RTS/CTS hardware flow control. RTS / CTS Flow Control is **another flow control mechanism that is part of the RS232 standard**. It makes use of two further pins on the RS232 connector, RTS (Request to Send) and CTS (Clear to Send). These two lines allow the receiver and the transmitter to alert each other to their state. Method declaration:
+The **setFlowControl(...)** method intended to set [RTS/CTS hardware flow control](https://www.ibm.com/docs/en/aix/7.2?topic=communication-flow-control). RTS / CTS Flow Control is **another flow control mechanism that is part of the RS232 standard**. It makes use of two further pins on the RS232 connector, RTS (Request to Send) and CTS (Clear to Send). These two lines allow the receiver and the transmitter to alert each other to their state. Method declaration:
 
 ```cpp
 bool setFlowControl(bool enable);
@@ -264,57 +275,57 @@ int main(void)
 {
     cout << "Data sender example v" << SerialPort::getVersion() << endl;
 
-    int portNum = 0;
-    cout << "Enter serial port num: ";
-    cin >> portNum;
-
-    int portBaudrate = 0;
+    string portName = "";
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
+    cout << "Enter serial port name (e.g. /dev/ttyS0): ";
+    cin >> portName;
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    cout << "Enter serial port num (1, 2 ..): ";
+    cin >> portName;
+    portName = "\\\\.\\COM" + portName;
+#endif
+    
+    int portBaudrate = 115200;
     cout << "Enter serial port baudrate: ";
     cin >> portBaudrate;
 
-    int numBytesToSend = 0;
+    int numBytesToSend = 10;
     cout << "Enter num bytes to send: ";
     cin >> numBytesToSend;
+    if (numBytesToSend > 1024)
+        return -1;
 
     int cyclePeriodMs = 0;
     cout << "Enter sending data period ms: ";
     cin >> cyclePeriodMs;
 
-    // Define serial port name.
-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
-    std::string portName = "/dev/ttyS" + std::to_string(portNum);
-#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    string portName = "\\\\.\\COM" + to_string(portNum);
-#endif
-
     // Open serial port.
     SerialPort serialPort;
     if (!serialPort.open(portName, portBaudrate))
         return -1;
-
-    // Init variables.
-    uint8_t* outputData = new uint8_t[numBytesToSend];
-
+    
     // Main loop.
-    chrono::time_point<system_clock> startTime = system_clock::now();
+    uint8_t outputData[1024];
+    time_point<system_clock> start = system_clock::now();
     while (true)
     {
+        // Wait according to parameters.
+        int waitTime = cyclePeriodMs -
+        (int)duration_cast<milliseconds>(system_clock::now() - start).count();
+        while (waitTime > 0)
+            waitTime = cyclePeriodMs -
+            (int)duration_cast<milliseconds>(system_clock::now() - start).count();
+        start = system_clock::now();
+
         // Prepare random data.
         for (int i = 0; i < numBytesToSend; ++i)
             outputData[i] = (uint8_t)(rand() % 255);
 
         // Send data.
-        std::cout << serialPort.write(outputData, numBytesToSend) <<
-                     " bytes sent" << std::endl;
-
-        // Wait according to parameters.
-        int waitTime = (int)duration_cast<std::chrono::milliseconds>(
-                    system_clock::now() - startTime).count();
-        waitTime = cyclePeriodMs - waitTime;
-        if (waitTime > 0)
-            this_thread::sleep_for(milliseconds(waitTime));
-        startTime = system_clock::now();
+        cout << serialPort.write(outputData, numBytesToSend) <<
+        " bytes sent" << endl;
     }
+
     return 1;
 }
 ```
@@ -338,24 +349,23 @@ int main(void)
 {
     cout << "Data receiver example v" << SerialPort::getVersion() << endl;
 
-    int portNum = 0;
-    cout << "Enter serial port num: ";
-    cin >> portNum;
+    string portName = "";
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
+    cout << "Enter serial port name (e.g. /dev/ttyS0): ";
+    cin >> portName;
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    cout << "Enter serial port num (1, 2 ..): ";
+    cin >> portName;
+    portName = "\\\\.\\COM" + portName;
+#endif
 
-    int portBaudrate = 0;
+    int portBaudrate = 115200;
     cout << "Enter serial port baudrate: ";
     cin >> portBaudrate;
 
     int waitDataTimeoutMs = 0;
-    cout << "Enter wait data timeout ms: ";
+    cout << "Enter wait data timeout, msec: ";
     cin >> waitDataTimeoutMs;
-
-    // Define serial port name.
-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__FreeBSD__)
-    std::string portName = "/dev/ttyS" + std::to_string(portNum);
-#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    string portName = "\\\\.\\COM" + to_string(portNum);
-#endif
 
     // Open serial port.
     SerialPort serialPort;
@@ -385,7 +395,6 @@ int main(void)
 Typical commands to build **SerialPort** library (on Linux OS):
 
 ```bash
-git clone https://github.com/ConstantRobotics-Ltd/SerialPort.git
 cd SerialPort
 mkdir build
 cd build
@@ -403,14 +412,7 @@ src
     yourLib.cpp
 ```
 
-You can add repository **SerialPort** as submodule by command (or just copy files):
-
-```bash
-cd <your respository folder>
-git submodule add https://github.com/ConstantRobotics-Ltd/SerialPort.git 3rdparty/SerialPort
-```
-
-In you repository folder will be created folder **3rdparty/SerialPort** which contains files of **SerialPort** repository. New structure of your repository:
+Create **3rdparty** in your repository folder and copy **SerialPort** repository folder to **3rdparty** folder of your repository. New structure of your repository:
 
 ```bash
 CMakeLists.txt
@@ -461,7 +463,7 @@ if (${PARENT}_SUBMODULE_SERIAL_PORT)
 endif()
 ```
 
-File **3rdparty/CMakeLists.txt** adds folder **SerialPort** to your project and excludes examples (SerialPort examples) from compiling. Your repository new structure will be:
+File **3rdparty/CMakeLists.txt** adds folder **SerialPort** to your project and excludes examples (SerialPort examples) from compiling (by default examples excluded from compiling if **SerialPort** included as sub-repository). Your repository new structure will be:
 
 ```bash
 CMakeLists.txt
@@ -506,11 +508,11 @@ Run application from sudo (the application doesn't have params):
 sudo ./SerialPortTester
 ```
 
-You will see dialog to enter serial port name. On **Windows OS** you should set COM port num (the application will make serial port name according to Windows format **"\\\\\\\\.\\\\COM" + to_string(portNum)"**):
+You will see dialog to enter serial port name. On **Windows OS** you should set COM port num (the application will make serial port name according to Windows format **"\\\\\\\\.\\\\COM" + portNum"**):
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set COM port num (1,2,3,...): 2
@@ -520,7 +522,7 @@ On **Linux OS** you have to type full serial port name: **/dev/ttyUSB0,1(N)** (f
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -530,7 +532,7 @@ After you have to set baudrate:
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -540,7 +542,7 @@ After you have to set baudrate and push "Enter" on keyboard:
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -551,7 +553,7 @@ After you have to set wait data timeout (after sending data the application will
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -563,7 +565,7 @@ After you have to set chose mode: string mode (you will be able print text for A
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0
@@ -572,11 +574,11 @@ Set wait data timeout (msec): 2000
 Chose mode (1 - string, 0 - HEX): 0
 ```
 
-After you will be able to enter message to send. In HEX mode you have to print string in HEX format and push push "Enter" on keyboard. The application will send your message to serial port and will wait 2 sec. After 2 sec the application will check and will show response or will show **"ERROR: No response from serial port"** message:
+After you will be able to enter message to send. In HEX mode you have to print string in HEX format and push push "Enter" on keyboard. The application will send your message to serial port and will wait timeout. After timeout the application will check and will show response or will show **"ERROR: No response from serial port"** message:
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/ttyUSB0 
@@ -596,7 +598,7 @@ In string mode the application in additional to input HEX data will show string 
 
 ```bash
 ================================================
-Serial port tester v3.0.5
+Serial port tester v3.1.0
 ================================================
 
 Set serial port name: /dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FT5MJ4PE-if00-port0

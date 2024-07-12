@@ -1,8 +1,24 @@
 ﻿#pragma once
 #include <string>
+#include <stdio.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <atomic>
+#if defined(linux) || defined(__linux) || defined(__linux__)
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <limits.h>
+#include <sys/file.h>
+#include <stdint.h>
+#include <mutex>
+#else
+#include <windows.h>
+#endif
 
 
 
@@ -11,13 +27,10 @@ namespace cr
 namespace clib
 {
 
-/// Serial port implementation class.
-class SerialPortImpl;
-
 /**
  * @brief Serial port class.
  */
-class SerialPort
+class SerialPortImpl
 {
 public:
 
@@ -30,12 +43,12 @@ public:
     /**
      * @brief Class constructor.
      */
-    SerialPort();
+    SerialPortImpl();
 
     /**
      * @brief Class destructor.
      */
-    ~SerialPort();
+    ~SerialPortImpl();
 
     /**
      * @brief Open serial port.
@@ -91,8 +104,16 @@ public:
 
 private:
 
-    /// Pointer to serial port implementation object.
-    SerialPortImpl* m_impl;
+    /// Port initialization flag.
+    std::atomic<bool> m_initFlag{false};
+    /// Read data timeout.
+    int m_timeoutMs{0};
+    /// Port handle.
+#if defined(linux) || defined(__linux) || defined(__linux__)|| defined(__FreeBSD__)
+    int m_port{0};
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    HANDLE m_port{0};
+#endif
 
 };
 }
