@@ -59,8 +59,8 @@ int main(void)
             outputData[i] = (uint8_t)(rand() % 255);
 
         // Send data.
-        std::cout << serialPort.write(outputData, numBytesToSend) <<
-                     " bytes sent" << std::endl;
+        cout << serialPort.write(outputData, numBytesToSend) <<
+        " bytes sent" << endl;
     }
 
     return 1;

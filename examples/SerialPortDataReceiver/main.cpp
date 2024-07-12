@@ -17,15 +17,14 @@ int main(void)
     cout << "Enter serial port name (e.g. /dev/ttyS0): ";
     cin >> portName;
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-    //cout << "Enter serial port num (1, 2 ..): ";
-    //cin >> portName;
-    //portName = "\\\\.\\COM" + portName;
-    portName = "\\\\.\\COM5";
+    cout << "Enter serial port num (1, 2 ..): ";
+    cin >> portName;
+    portName = "\\\\.\\COM" + portName;
 #endif
 
     int portBaudrate = 115200;
-    //cout << "Enter serial port baudrate: ";
-    //cin >> portBaudrate;
+    cout << "Enter serial port baudrate: ";
+    cin >> portBaudrate;
 
     int waitDataTimeoutMs = 0;
     cout << "Enter wait data timeout, msec: ";

@@ -83,48 +83,11 @@ int SerialPortImpl::read(uint8_t *buf, uint32_t size)
     }
 #elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 
-    // Set up the event mask to notify when characters are received.
-    DWORD dwEventMask;
-    if (!SetCommMask(m_port, EV_RXCHAR)) {
-        // Handle error
-        return -1;
-    }
-
-    // Wait for the character to be received.
-    OVERLAPPED ov = {0};
-    ov.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-    if (ov.hEvent == NULL) {
-        // Handle error
-        return -1;
-    }
-
-    if (!WaitCommEvent(m_port, &dwEventMask, &ov)) {
-        
-        if (GetLastError() != ERROR_IO_PENDING) {
-            // WaitCommEvent failed
-            CloseHandle(ov.hEvent);
-            return -1;
-        }
-
-        std::cout << "WaitForSingleObject" << std::endl;
-
-        // WaitCommEvent is pending, wait for the specified timeout
-        DWORD dwWait = WaitForSingleObject(ov.hEvent, m_timeoutMs);
-        if (dwWait != WAIT_OBJECT_0) {
-            // Timeout or error
-            CancelIo(m_port);
-            CloseHandle(ov.hEvent);
-            return -1;
-        }
-    }
-
     int n = 0;
     ClearCommError(m_port, NULL, NULL);
     if (ReadFile(m_port, buf, size, (LPDWORD)((void*)&n), NULL))
         return n;
-    // ReadFile failed
-    CloseHandle(ov.hEvent);
-
+        
 #endif
 
     return -1;
@@ -381,7 +344,7 @@ bool SerialPortImpl::open(
                          0,
                          NULL,
                          OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL,
+                         NULL,
                          NULL);
     if (m_port == INVALID_HANDLE_VALUE)
         return false;
@@ -389,19 +352,24 @@ bool SerialPortImpl::open(
     DCB port_settings = {0};
     port_settings.DCBlength = sizeof(port_settings);
 
-    if (!BuildCommDCBA(mode_str, &port_settings)) {
+    if (!BuildCommDCBA(mode_str, &port_settings))
+    {
         close();
         return false;
     }
 
-    if (!SetCommState(m_port, &port_settings)) {
+    if (!SetCommState(m_port, &port_settings))
+    {
         close();
         return false;
     }
 
     COMMTIMEOUTS Cptimeouts = {0};
     Cptimeouts.ReadIntervalTimeout = MAXDWORD;
-    if (!SetCommTimeouts(m_port, &Cptimeouts)) {
+    Cptimeouts.ReadTotalTimeoutConstant = timeout;
+    Cptimeouts.ReadTotalTimeoutMultiplier = MAXDWORD;
+    if (!SetCommTimeouts(m_port, &Cptimeouts))
+    {
         close();
         return false;
     }
@@ -435,11 +403,8 @@ bool SerialPortImpl::setFlowControl(bool enable)
     // NOTE: This is important! POSIX states that the struct passed to tcsetattr()
     // must have been initialized with a call to tcgetattr() overwise behaviour
     // is undefined
-    if(tcgetattr(m_port, &tty) != 0) {
-        std::cout << "Error "<< errno << " from tcgetattr: "
-                  << strerror(errno) << std::endl;
+    if(tcgetattr(m_port, &tty) != 0)
         return false;
-    }
 
     if (enable)
         tty.c_cflag |= CRTSCTS;  // Enable RTS/CTS hardware flow control
