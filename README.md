@@ -4,7 +4,7 @@
 
 # **SerialPort C++ library**
 
-**v3.0.5**
+**v3.1.0**
 
 
 
